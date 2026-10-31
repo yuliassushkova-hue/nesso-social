@@ -14,7 +14,7 @@
 //   node bin/social.mjs exchange-threads NAME  short-lived Threads token -> long-lived secret NAME
 
 import { readFileSync, readdirSync, existsSync, writeFileSync, statSync } from 'node:fs';
-import { join, extname, basename, dirname, resolve } from 'node:path';
+import { join, extname, basename, dirname, resolve, relative, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -293,7 +293,20 @@ async function publishThreads(post, token, urls) {
   return { mediaId: published.id, permalink: info.permalink ?? null, account: me.username };
 }
 
-// Both APIs fetch media from a public URL, so each file is put in the public R2 bucket first.
+// Both APIs fetch media from a public URL. The repository is public, so in Actions a file is
+// served straight from GitHub at the exact commit being published. An R2 bucket, when its
+// variables are set, is used instead (for a private repository).
+async function mediaUrl(post, name) {
+  if (process.env.R2_BUCKET) return uploadMedia(post, name);
+  const { GITHUB_REPOSITORY: repo, GITHUB_SHA: sha } = process.env;
+  if (!repo || !sha) throw new Error('media needs either the R2 variables or a GitHub Actions run');
+  const path = relative(ROOT, join(post.dir, name)).split(sep).map(encodeURIComponent).join('/');
+  const url = `https://raw.githubusercontent.com/${repo}/${sha}/${path}`;
+  const res = await fetch(url, { method: 'HEAD' });
+  if (!res.ok) throw new Error(`${name} is not reachable at ${url} (HTTP ${res.status}); is the repository public?`);
+  return url;
+}
+
 function uploadMedia(post, name) {
   const file = join(post.dir, name);
   const digest = createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 12);
@@ -368,7 +381,8 @@ async function publish({ dryRun }) {
     try {
       const token = process.env[channel.token];
       if (!token) throw new Error(`secret ${channel.token} is not set`);
-      const urls = post.media.map((name) => uploadMedia(post, name));
+      const urls = [];
+      for (const name of post.media) urls.push(await mediaUrl(post, name));
       const result =
         channel.platform === 'instagram'
           ? await publishInstagram(post, token, urls, accountIdFor(post.channel))
