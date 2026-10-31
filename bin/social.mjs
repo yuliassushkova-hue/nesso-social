@@ -183,8 +183,16 @@ async function igAccount(token, accountId) {
     return { base: IG, id: me.user_id ?? me.id, username: me.username };
   }
   if (accountId) {
-    const account = await api('GET', `${FB}/${accountId}`, { fields: 'id,username', access_token: token });
-    return { base: FB, id: account.id, username: account.username };
+    try {
+      const account = await api('GET', `${FB}/${accountId}`, { fields: 'id,username', access_token: token });
+      return { base: FB, id: account.id, username: account.username };
+    } catch (error) {
+      // Say what kind of object the id is, so the right id can be found from it.
+      const meta = await api('GET', `${FB}/${accountId}`, { metadata: 1, access_token: token }).catch((e) => ({ error: e.message }));
+      const fields = (meta.metadata?.fields ?? []).map((f) => f.name).join(',');
+      const edges = Object.keys(meta.metadata?.connections ?? {}).join(',');
+      throw new Error(`${error.message} | type ${meta.metadata?.type} | fields ${fields} | edges ${edges} | ${JSON.stringify(Object.fromEntries(Object.entries(meta).filter(([k]) => k !== 'metadata')))}`);
+    }
   }
   const tried = [];
   const attempt = async (label, fn) => {
