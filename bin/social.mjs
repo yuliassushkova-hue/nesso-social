@@ -189,10 +189,21 @@ async function igAccount(token, accountId) {
   } catch (error) {
     tried.push(error.message);
   }
+  // With no Facebook Page in between, the account is named in the token's own grant:
+  // debug_token lists the ids each Instagram permission was given for.
   try {
-    const me = await api('GET', `${FB}/me`, { fields: 'id,username', access_token: token });
-    if (me.username) return { base: FB, id: me.id, username: me.username };
-    tried.push('me has no username, so it is not an Instagram account');
+    const debug = await api('GET', `${FB}/debug_token`, { input_token: token, access_token: token });
+    const ids = new Set(
+      (debug.data?.granular_scopes ?? [])
+        .filter((s) => s.scope === 'instagram_content_publish' || s.scope === 'instagram_basic')
+        .flatMap((s) => s.target_ids ?? []),
+    );
+    if (ids.size === 1) {
+      const [id] = ids;
+      const account = await api('GET', `${FB}/${id}`, { fields: 'id,username', access_token: token });
+      return { base: FB, id: account.id, username: account.username };
+    }
+    tried.push(`debug_token names ${ids.size} Instagram accounts`);
   } catch (error) {
     tried.push(error.message);
   }
