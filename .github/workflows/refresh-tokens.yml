@@ -1,0 +1,24 @@
+name: refresh-tokens
+
+# Instagram and Threads tokens last 60 days and can be refreshed once a day old.
+# Twice a month keeps them far from expiry.
+on:
+  schedule:
+    - cron: '0 6 1,15 * *'
+  workflow_dispatch: {}
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node bin/social.mjs refresh-tokens
+        env:
+          GH_TOKEN: ${{ secrets.SECRETS_PAT }}
+          IG_IT_TOKEN: ${{ secrets.IG_IT_TOKEN }}
+          IG_DK_TOKEN: ${{ secrets.IG_DK_TOKEN }}
+          THREADS_IT_TOKEN: ${{ secrets.THREADS_IT_TOKEN }}
+          THREADS_DK_TOKEN: ${{ secrets.THREADS_DK_TOKEN }}

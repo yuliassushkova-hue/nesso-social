@@ -1,0 +1,22 @@
+name: whoami
+
+# Run by hand after setting the secrets: prints which account each token reaches.
+on:
+  workflow_dispatch: {}
+
+jobs:
+  whoami:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node bin/social.mjs whoami
+        env:
+          IG_IT_TOKEN: ${{ secrets.IG_IT_TOKEN }}
+          IG_DK_TOKEN: ${{ secrets.IG_DK_TOKEN }}
+          IG_IT_ACCOUNT_ID: ${{ secrets.IG_IT_ACCOUNT_ID }}
+          IG_DK_ACCOUNT_ID: ${{ secrets.IG_DK_ACCOUNT_ID }}
+          THREADS_IT_TOKEN: ${{ secrets.THREADS_IT_TOKEN }}
+          THREADS_DK_TOKEN: ${{ secrets.THREADS_DK_TOKEN }}
