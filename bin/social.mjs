@@ -187,32 +187,47 @@ async function igAccount(token, accountId) {
     return { base: FB, id: account.id, username: account.username };
   }
   const tried = [];
-  try {
+  const attempt = async (label, fn) => {
+    try {
+      return await fn();
+    } catch (error) {
+      tried.push(`${label}: ${error.message}`);
+      return null;
+    }
+  };
+  // A Unified Login token may also be accepted by graph.instagram.com, where /me is the account.
+  const viaInstagram = await attempt('graph.instagram.com/me', async () => {
+    const me = await api('GET', `${IG}/me`, { fields: 'user_id,username', access_token: token });
+    return { base: IG, id: me.user_id ?? me.id, username: me.username };
+  });
+  if (viaInstagram) return viaInstagram;
+  // Through a Facebook Page the account is linked to.
+  const viaPages = await attempt('me/accounts', async () => {
     const pages = await api('GET', `${FB}/me/accounts`, { fields: 'instagram_business_account{id,username}', access_token: token });
     const linked = (pages.data ?? []).map((p) => p.instagram_business_account).filter(Boolean);
-    if (linked.length === 1) return { base: FB, id: linked[0].id, username: linked[0].username };
-    tried.push(`me/accounts found ${linked.length} Instagram accounts`);
-  } catch (error) {
-    tried.push(error.message);
-  }
-  // With no Facebook Page in between, the account is named in the token's own grant:
-  // debug_token lists the ids each Instagram permission was given for.
-  try {
-    const debug = await api('GET', `${FB}/debug_token`, { input_token: token, access_token: token });
-    const ids = new Set(
-      (debug.data?.granular_scopes ?? [])
-        .filter((s) => s.scope === 'instagram_content_publish' || s.scope === 'instagram_basic')
-        .flatMap((s) => s.target_ids ?? []),
-    );
-    if (ids.size === 1) {
-      const [id] = ids;
-      const account = await api('GET', `${FB}/${id}`, { fields: 'id,username', access_token: token });
-      return { base: FB, id: account.id, username: account.username };
+    if (linked.length !== 1) throw new Error(`${linked.length} Instagram accounts`);
+    return { base: FB, id: linked[0].id, username: linked[0].username };
+  });
+  if (viaPages) return viaPages;
+  // Through the business portfolio that owns it.
+  const viaBusiness = await attempt('me/businesses', async () => {
+    const businesses = await api('GET', `${FB}/me/businesses`, { fields: 'id', access_token: token });
+    const found = [];
+    for (const b of businesses.data ?? []) {
+      for (const edge of ['owned_instagram_accounts', 'instagram_accounts']) {
+        const list = await api('GET', `${FB}/${b.id}/${edge}`, { fields: 'id,username', access_token: token }).catch(() => ({}));
+        for (const a of list.data ?? []) if (!found.some((f) => f.id === a.id)) found.push(a);
+      }
     }
-    tried.push(`debug_token names ${ids.size} Instagram accounts`);
-  } catch (error) {
-    tried.push(error.message);
-  }
+    if (found.length !== 1) throw new Error(`${found.length} Instagram accounts (${found.map((a) => `@${a.username} ${a.id}`).join(', ')})`);
+    return { base: FB, id: found[0].id, username: found[0].username };
+  });
+  if (viaBusiness) return viaBusiness;
+  // Nothing found: say at least who the token belongs to.
+  await attempt('me', async () => {
+    const me = await api('GET', `${FB}/me`, { fields: 'id,name', access_token: token });
+    tried.push(`token belongs to "${me.name}" (${me.id})`);
+  });
   throw new Error(`could not find the Instagram account for this token (${tried.join('; ')}); set its account id`);
 }
 
