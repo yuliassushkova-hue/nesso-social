@@ -1,6 +1,6 @@
 // One-off: what can the IG_IT_TOKEN read about the nesso_italia account? Prints shapes, never the token.
 const T = process.env.IG_IT_TOKEN;
-const ID = '1578760067137384';
+const ID = '17841444465755249';
 const FB = 'https://graph.facebook.com/v23.0';
 const get = async (label, url, params) => {
   const u = new URL(url);
