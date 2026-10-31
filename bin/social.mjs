@@ -126,6 +126,12 @@ function readPosts() {
     .sort((a, b) => Date.parse(a.at) - Date.parse(b.at) || a.id.localeCompare(b.id));
 }
 
+// Instagram account ids are not secrets, so they live in the repository: accounts.json maps a
+// channel to the id Meta shows beside the account under "Generate access tokens".
+const ACCOUNTS = join(ROOT, 'accounts.json');
+const accountIdFor = (name) =>
+  process.env[CHANNELS[name].account] || (existsSync(ACCOUNTS) ? JSON.parse(readFileSync(ACCOUNTS, 'utf8'))[name] : undefined);
+
 const readLog = () => (existsSync(LOG) ? JSON.parse(readFileSync(LOG, 'utf8')) : {});
 const writeLog = (log) => writeFileSync(LOG, `${JSON.stringify(log, null, 2)}\n`);
 
@@ -342,7 +348,7 @@ async function publish({ dryRun }) {
       const urls = post.media.map((name) => uploadMedia(post, name));
       const result =
         channel.platform === 'instagram'
-          ? await publishInstagram(post, token, urls, process.env[channel.account])
+          ? await publishInstagram(post, token, urls, accountIdFor(post.channel))
           : await publishThreads(post, token, urls);
       log[post.id] = { channel: post.channel, at: post.at, publishedAt: new Date().toISOString(), ...result };
       writeLog(log); // after each post, so a later failure cannot cause a repeat
@@ -363,7 +369,7 @@ async function whoami() {
       continue;
     }
     try {
-      const me = await whoIs(channel.platform, token, process.env[channel.account]);
+      const me = await whoIs(channel.platform, token, accountIdFor(name));
       console.log(`${name.padEnd(10)}  @${me.username}  (account id ${me.id})`);
     } catch (error) {
       process.exitCode = 1;
