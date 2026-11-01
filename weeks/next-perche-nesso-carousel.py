@@ -25,8 +25,8 @@ SPEC = {"slides": 7, "photos": [
     {"x": 3540, "y": 760, "lines": [("Ecco quanto rumore", "violet", 66), ("entra davvero.", "violet", 66)]},
     # 5
     {"x": 4416, "y": 180, "lines": [("E i soldi?", "white", 120)]},
-    {"x": 4416, "y": 470, "lines": [("€300.000", "white", 84), ("nell'annuncio.", "white", 84)]},
-    {"x": 4416, "y": 790, "lines": [("€313.528 alla fine.", "violet", 92), ("prima di notaio e banca", "white", 52)]},
+    {"x": 4416, "y": 470, "lines": [("€250.000", "white", 84), ("nell'annuncio.", "white", 84)]},
+    {"x": 4416, "y": 790, "lines": [("€264.687,50 alla fine.", "violet", 80), ("prima di notaio e banca", "white", 52)]},
     # 6
     {"x": 5496, "y": 150, "lines": [("Nesso fa il conto,", "white", 84), ("riga per riga.", "violet", 84)]},
     # 7
