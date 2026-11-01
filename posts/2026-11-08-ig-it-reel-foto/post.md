@@ -8,7 +8,7 @@ Le foto degli annunci si scattano dall'angolo, con l'obiettivo più largo che c'
 
 In visita misura tu: lunghezza, larghezza e altezza di ogni stanza. La checklist di Nesso ti dice cosa misurare e come.
 
-Gratis, link in bio.
+Prova Nesso: link in bio.
 
 Ti è mai successo? Raccontalo nei commenti 👇
 Salvalo per la prossima visita 📌

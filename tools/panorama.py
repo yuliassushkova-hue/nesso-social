@@ -7,12 +7,15 @@ ends on the next and a phone stands across the cut. The swipe is what finishes t
 spec = {
   "slides": 7,
   "photos": [{"file", "x", "focus": 0..1 (horizontal crop centre, optional)}],   # left to right
-  "blocks": [{"x", "y", "lines": [("text", "white"|"violet"|"orange"|"ink", size)]}],
+  "blocks": [{"x", "y", "lines": [("text", "white"|"violet"|"orange"|"ink", size)], "cross": bool}],
   "phones": [{"mock", "x" (centre), "y" (top), "height", "tilt"}],
-  "mark": {"x" (centre), "y", "height", "word": "white"|"ink", "sub"},
+  "mark": {"x" (centre), "y", "height", "word": "white"|"ink"},  # straight on the photo, no plate
   "hint": True,
 }
 Photos are blended into each other over `feather` pixels, so no cut shows between them.
+
+Only the opening sentence and a phone should stand across a cut (founder, 2026-11-01): every other
+block sits inside its own slide. A block that crosses a cut without "cross": True stops the render.
 """
 from pathlib import Path
 
@@ -62,6 +65,10 @@ def render_panorama(spec, out_dir, feather=320):
         canvas.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(40)))
         canvas.alpha_composite(tilted, (x0, y0))
     for blk in spec.get("blocks", []):
+        x0_ = blk["x"]
+        right = x0_ + max(render.font(sz, 800).getlength(t) + 2 * round(sz * 0.3) for t, _, sz in blk["lines"])
+        if not blk.get("cross") and right > (x0_ // SW + 1) * SW - 60:
+            raise ValueError(f"block {blk['lines'][0][0]!r} crosses a cut ({x0_}..{right:.0f}); move it or mark cross")
         y = blk["y"]
         for text, style, size in blk["lines"]:
             f = render.font(size, 800)
@@ -76,15 +83,15 @@ def render_panorama(spec, out_dir, feather=320):
             y += h + 2 * pad_y + 12
     if spec.get("mark"):
         m = spec["mark"]
-        wm = render.wordmark(m.get("height", 120), render.WHITE if m.get("word", "white") == "white" else render.INK)
-        box_w, box_h = wm.width + 120, wm.height + (110 if m.get("sub") else 60)
-        bx, by = m["x"] - box_w // 2, m["y"]
-        d.rounded_rectangle([bx, by, bx + box_w, by + box_h], radius=50, fill=(255, 255, 255, 235) if m.get("word") == "ink" else (22, 24, 28, 200))
-        canvas.alpha_composite(wm, (m["x"] - wm.width // 2, by + 30))
-        if m.get("sub"):
-            fs = render.font(44, 800)
-            col = render.INK if m.get("word") == "ink" else render.WHITE
-            d.text((m["x"] - fs.getlength(m["sub"]) / 2, by + wm.height + 40), m["sub"], font=fs, fill=col)
+        white = m.get("word", "white") == "white"
+        wm = render.wordmark(m.get("height", 120), render.WHITE if white else render.INK)
+        pos = (m["x"] - wm.width // 2, m["y"])
+        # No plate: a soft shadow under the letters keeps the lockup readable on any photo.
+        shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+        tint = Image.new("RGBA", wm.size, (10, 8, 20, 170) if white else (255, 255, 255, 190))
+        shadow.paste(tint, (pos[0] + 4, pos[1] + 8), wm)
+        canvas.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(18)))
+        canvas.alpha_composite(wm, pos)
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     names = []

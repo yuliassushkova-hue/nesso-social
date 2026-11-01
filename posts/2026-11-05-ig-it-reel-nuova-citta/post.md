@@ -8,7 +8,7 @@ Ti trasferisci per lavoro e la città non la conosci.
 
 Cinque domande e Nesso ti dice che abitante sei, con il tuo sticker, e quale quartiere ti somiglia. I quartieri sono letti con dati pubblicati: negozi, parchi, scuole, minuti a piedi.
 
-Gratis, link in bio.
+Prova Nesso: link in bio.
 
 Ti è mai successo? Raccontalo nei commenti 👇
 Salvalo se ti trasferisci 📌

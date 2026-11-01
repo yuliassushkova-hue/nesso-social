@@ -10,7 +10,7 @@ nesso.fit/it/checklist-visita-casa, the mortgage rights from the same costs page
 
 P = "~/Documents/GitHub/nesso-assets/pexels/"
 M = "~/Documents/GitHub/nesso_mobile/docs/marketing/mockups-it/"
-LINK = "Gratis · link in bio"
+LINK = "Prova Nesso · link in bio"
 TAG_VISIT = "#cercocasa #visitacasa #comprarecasa #affittocasa #casa"
 TAG_COST = "#comprarecasa #primacasa #mutuo #casa #Milano"
 TAG_SELL = "#vendocasa #venderecasa #homestaging #casa #immobiliare"
@@ -79,14 +79,14 @@ ITEMS = [
          [("them", frame("30744460"), 0.0), ("them", "Sole tutto il giorno ☀️", 0.6),
           ("me", "Anche in fondo alla stanza?", 0.0), ("them", "Eh… quasi 😅", 0.9)],
          "Fidati.\nMa misura.", "La luce in fondo alla stanza, in visita.", "06-dentro-property-check.png",
-         "«Luminosissima.» Vicino alla finestra lo sono tutte.\n\nIn visita spegni le luci e guarda la parete di fondo: è lì che leggerai e lavorerai. Nella checklist di Nesso c'è come farlo, e cosa quel controllo non può dirti.\n\nGratis, link in bio.\n\n" + TAG_VISIT),
+         "«Luminosissima.» Vicino alla finestra lo sono tutte.\n\nIn visita spegni le luci e guarda la parete di fondo: è lì che leggerai e lavorerai. Nella checklist di Nesso c'è come farlo, e cosa quel controllo non può dirti.\n\nProva Nesso: link in bio.\n\n" + TAG_VISIT),
     film(2, "guarda-davvero", [
         ("6798992", 0.3, 1.0, "Prima", None), ("6798992", 1.3, 1.1, "di *firmare,*", None),
         ("29513615", 0.5, 1.4, "guarda", None), ("40134358", 0.5, 1.6, "*davvero.*", None),
         ("36300251", 0.5, 1.2, "La luce.", None), ("31960017", 0.5, 1.2, "Il silenzio.", None),
         ("6323324", 0.5, 1.2, "Gli angoli.", None),
         ("30912265", 0.5, 2.6, "82 controlli\nper la *visita.*", "06-dentro-property-check.png"),
-    ], "Una visita dura venti minuti. La casa, anni.\n\nLa luce in fondo alla stanza, il rumore a finestra aperta, gli angoli dietro i mobili: 82 controlli per la visita, molti col telefono.\n\nGratis, link in bio.\n\n" + TAG_VISIT),
+    ], "Una visita dura venti minuti. La casa, anni.\n\nLa luce in fondo alla stanza, il rumore a finestra aperta, gli angoli dietro i mobili: 82 controlli per la visita, molti col telefono.\n\nProva Nesso: link in bio.\n\n" + TAG_VISIT),
     chat(2, "20:00", "quanto-paghi", ("13441354", 0.5), "Giulia", "Amica", ORANGE_AV, "Allora, quanto la paghi? 🏠",
          [("me", "300 mila 🙂", 0.0), ("them", "E registro, agenzia, IVA, mutuo?", 0.7), ("me", "…😳", 0.0)],
          "€13.528 in più.", "Su €300.000, prima di notaio e banca.", "04-costi.png",
@@ -96,7 +96,7 @@ ITEMS = [
     chat(3, "08:00", "tranquilla", ("5835540", 0.5), "Marco", "Agenzia", VIOLET_AV, "Zona tranquillissima 🤫",
          [("me", "Anche con la finestra aperta?", 0.0), ("them", "Beh… il tram passa alle 6 🚋", 0.9)],
          "Aprila.\nE misura.", "30 secondi aperta, 30 chiusa.", "07-misura-rumore-finestra.png",
-         "Alla visita la finestra è quasi sempre chiusa. Aprila.\n\n30 secondi a finestra aperta, 30 a finestra chiusa, telefono fermo nello stesso punto: Nesso confronta le due misure. La cifra assoluta cambia da telefono a telefono, la differenza no.\n\nGratis, link in bio.\n\n" + TAG_VISIT),
+         "Alla visita la finestra è quasi sempre chiusa. Aprila.\n\n30 secondi a finestra aperta, 30 a finestra chiusa, telefono fermo nello stesso punto: Nesso confronta le due misure. La cifra assoluta cambia da telefono a telefono, la differenza no.\n\nProva Nesso: link in bio.\n\n" + TAG_VISIT),
     film(3, "silenzio", [
         ("31960017", 0.5, 1.2, "Casa", None), ("40134358", 0.8, 1.2, "è dove", None),
         ("30912265", 0.5, 1.3, "il *silenzio*", None), ("6263194", 0.5, 1.5, "ti aspetta.", None),
@@ -106,7 +106,7 @@ ITEMS = [
     chat(3, "20:00", "caparra", ("7710747", 0.5), "Proprietario", "Annuncio", INK_AV, "Per bloccarla mi mandi 1.000€? 🙏",
          [("me", "Prima posso vederla?", 0.0), ("them", "Sono all'estero 😕", 0.8), ("me", "Allora no.", 0.0)],
          "Prima la visita.", "Nessuna caparra prima di aver visto la casa di persona.", "06-dentro-property-check.png",
-         "Una regola sui soldi: nessuna caparra prima di aver visto la casa di persona. Né per un affitto, né per un acquisto.\n\nE quando la vedi, hai 82 controlli in tasca. Gratis, link in bio.\n\n" + TAG_VISIT),
+         "Una regola sui soldi: nessuna caparra prima di aver visto la casa di persona. Né per un affitto, né per un acquisto.\n\nE quando la vedi, hai 82 controlli in tasca. Prova Nesso: link in bio.\n\n" + TAG_VISIT),
 
     # ---------------------------------------------------------------- Wednesday 4
     chat(4, "08:00", "in-due", ("8555712", 0.5), "Luca", "Fidanzato", ORANGE_AV, "Ti è piaciuta la casa? 😍",
@@ -134,11 +134,11 @@ ITEMS = [
         ("40187579", 0.5, 1.4, "qualcosa.", None), ("36300251", 0.5, 1.3, "Il pavimento.", None),
         ("31960017", 0.5, 1.3, "Le finestre.", None), ("6263194", 0.5, 1.3, "L'*acqua.*", None),
         ("30912265", 0.5, 2.6, "82 controlli\nper *ascoltarli.*", "06-dentro-property-check.png"),
-    ], "Pavimento, finestre, acqua, muri, rumore, luce.\n\nOgni controllo della checklist di Nesso dice come farlo in pochi passi, con cosa si fa e cosa non stabilisce. Molti col telefono.\n\nGratis, link in bio.\n\n" + TAG_VISIT),
+    ], "Pavimento, finestre, acqua, muri, rumore, luce.\n\nOgni controllo della checklist di Nesso dice come farlo in pochi passi, con cosa si fa e cosa non stabilisce. Molti col telefono.\n\nProva Nesso: link in bio.\n\n" + TAG_VISIT),
     chat(5, "20:00", "nuova-citta", ("9141848", 0.5), "Chiara", "Collega", VIOLET_AV, "Benvenuta a Milano! 🎉",
          [("them", "Dove cerchi casa?", 0.6), ("me", "Non conosco nessun quartiere 😅", 0.0)],
          "5 domande.\nIl tuo quartiere.", "Scopri che abitante sei.", "02b-quiz-sticker.png",
-         "Ti trasferisci per lavoro e la città non la conosci.\n\nCinque domande e Nesso ti dice che abitante sei, con il tuo sticker, e quale quartiere ti somiglia. I quartieri sono letti con dati pubblicati: negozi, parchi, scuole, minuti a piedi.\n\nGratis, link in bio.\n\n" + TAG_LIVE),
+         "Ti trasferisci per lavoro e la città non la conosci.\n\nCinque domande e Nesso ti dice che abitante sei, con il tuo sticker, e quale quartiere ti somiglia. I quartieri sono letti con dati pubblicati: negozi, parchi, scuole, minuti a piedi.\n\nProva Nesso: link in bio.\n\n" + TAG_LIVE),
 
     # ---------------------------------------------------------------- Friday 6
     chat(6, "08:00", "notaio", ("8814707", 0.5), "Paolo", "Amico", ORANGE_AV, "E il notaio quanto costa? 🤔",
@@ -150,7 +150,7 @@ ITEMS = [
         ("6323324", 0.5, 1.4, "i numeri.", None), ("30912265", 0.8, 1.3, "Imposte.", None),
         ("36300251", 0.5, 1.2, "Agenzia.", None), ("29532417", 0.3, 1.2, "*Mutuo.*", None),
         ("6263194", 0.5, 2.6, "Tutto, sul tuo\n*prezzo.*", "04-costi.png"),
-    ], "Prima delle chiavi, i numeri.\n\nRegistro, ipotecaria e catastale, agenzia con l'IVA, imposta sul mutuo: il calcolatore di Nesso fa il conto sul tuo prezzo, con la norma accanto a ogni riga. Notaio, banca e assicurazione a parte: servono preventivi scritti.\n\nGratis, link in bio.\n\n" + TAG_COST),
+    ], "Prima delle chiavi, i numeri.\n\nRegistro, ipotecaria e catastale, agenzia con l'IVA, imposta sul mutuo: il calcolatore di Nesso fa il conto sul tuo prezzo, con la norma accanto a ogni riga. Notaio, banca e assicurazione a parte: servono preventivi scritti.\n\nProva Nesso: link in bio.\n\n" + TAG_COST),
     chat(6, "20:00", "iva", ("7646611", 0.5), "Marco", "Agenzia", VIOLET_AV, "La provvigione è il 3% 🙂",
          [("me", "IVA compresa?", 0.0), ("them", "…no 😬", 0.9)],
          "+22% di IVA.", "Su €300.000: €10.980, non €9.000.", "04-costi.png",
@@ -176,12 +176,12 @@ ITEMS = [
     chat(8, "08:00", "foto", ("4553290", 0.5), "Sara", "Amica", ORANGE_AV, "Hai visto le foto? Enorme! 📸",
          [("them", frame("29681899"), 0.0), ("me", "Dal vivo è la metà 🙃", 0.0)],
          "Le foto\ningrandiscono.", "Misura la stanza in visita.", "06-dentro-property-check.png",
-         "Le foto degli annunci si scattano dall'angolo, con l'obiettivo più largo che c'è.\n\nIn visita misura tu: lunghezza, larghezza e altezza di ogni stanza. La checklist di Nesso ti dice cosa misurare e come.\n\nGratis, link in bio.\n\n" + TAG_VISIT),
+         "Le foto degli annunci si scattano dall'angolo, con l'obiettivo più largo che c'è.\n\nIn visita misura tu: lunghezza, larghezza e altezza di ogni stanza. La checklist di Nesso ti dice cosa misurare e come.\n\nProva Nesso: link in bio.\n\n" + TAG_VISIT),
     film(8, "quartiere", [
         ("40134358", 0.5, 1.3, "Il *quartiere*", None), ("29681899", 0.5, 1.3, "giusto", None),
         ("6263194", 0.5, 1.4, "cambia", None), ("29513615", 0.5, 1.5, "*tutto.*", None),
         ("30912265", 0.5, 2.6, "Il tuo,\nin 5 *domande.*", "02b-quiz-sticker.png"),
-    ], "Il caffè sotto casa, il parco, la scuola, quanti minuti a piedi.\n\nCinque domande e Nesso ti dice che abitante sei e quale quartiere ti somiglia, con dati pubblicati. Dieci città italiane.\n\nGratis, link in bio.\n\n" + TAG_LIVE),
+    ], "Il caffè sotto casa, il parco, la scuola, quanti minuti a piedi.\n\nCinque domande e Nesso ti dice che abitante sei e quale quartiere ti somiglia, con dati pubblicati. Dieci città italiane.\n\nProva Nesso: link in bio.\n\n" + TAG_LIVE),
     chat(8, "20:00", "mutuo", ("8293126", 0.5), "Banca", "Consulente", INK_AV, "Ecco la nostra offerta! ✨",
          [("me", "Mi manda anche il PIES?", 0.0), ("them", "Certo, è gratuito 📄", 0.8)],
          "Confronta\nil TAEG.", "Chiedi il PIES a più banche, prima di firmare.", "04-costi.png",

@@ -8,7 +8,7 @@ Una visita dura venti minuti. La casa, anni.
 
 La luce in fondo alla stanza, il rumore a finestra aperta, gli angoli dietro i mobili: 82 controlli per la visita, molti col telefono.
 
-Gratis, link in bio.
+Prova Nesso: link in bio.
 
 Tu cosa guardi per primo in una casa? Scrivilo nei commenti 👇
 Salvalo per la prossima visita 📌
