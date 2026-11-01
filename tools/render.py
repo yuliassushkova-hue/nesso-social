@@ -235,6 +235,41 @@ def card_layer(card, series, theme, zone=(TOP, BOTTOM)):
             y = draw_text(b, card["sub"], font(52, 600), y + 40, t, color=t["soft"], leading=1.22)
         if card.get("source"):
             y = draw_text(b, card["source"], font(38, 600), y + 50, t, color=t["soft"])
+    elif kind == "serif":
+        # A word or two at a time, centred, in the landing page's serif: the warm-interior film style.
+        reg = ImageFont.truetype(str(ROOT / "assets/fonts/InstrumentSerif-Regular.ttf"), card.get("size", 150))
+        ita = ImageFont.truetype(str(ROOT / "assets/fonts/InstrumentSerif-Italic.ttf"), card.get("size", 150))
+        cream, glow = (255, 244, 226), (30, 14, 6, 235)
+        lines = card["text"].split("\n")
+        lh = round(reg.size * 1.02)
+        y = 220  # room above for the halo; the same is added below, so the block stays centred
+        shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        sd = ImageDraw.Draw(shadow)
+        words = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        wd = ImageDraw.Draw(words)
+        for li, line in enumerate(lines):
+            pieces = [(t, i % 2 == 1) for i, t in enumerate(line.split("*")) if t]
+            total = sum((ita if it else reg).getlength(t) for t, it in pieces)
+            x = (W - total) / 2
+            for t, it in pieces:
+                f = ita if it else reg
+                sd.text((x, y + li * lh), t, font=f, fill=glow)
+                wd.text((x, y + li * lh), t, font=f, fill=(255, 196, 140) if it else cream)
+                x += f.getlength(t)
+        # a soft warm-dark halo behind the words, so they read on a white door as well as on a lamp
+        halo = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ImageDraw.Draw(halo).ellipse([40, y - 150, W - 40, y + lh * len(lines) + 150], fill=(25, 12, 5, 95))
+        body.alpha_composite(halo.filter(ImageFilter.GaussianBlur(90)))
+        body.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(14)))
+        body.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(4)))
+        body.alpha_composite(words)
+        y += lh * len(lines)
+        if card.get("sub"):
+            fs = font(card.get("sub_size", 44), 700)
+            subw = fs.getlength(card["sub"])
+            b.text(((W - subw) / 2, y + 30), card["sub"], font=fs, fill=cream)
+            y += 30 + fs.size
+        y += 220
     elif kind == "caption":
         # Words on solid blocks, one block per line, the way captions sit on a feed video:
         # readable on any footage without darkening it.
@@ -391,9 +426,10 @@ def render_reel(item, out):
                 if e < 1:
                     moved.putalpha(moved.getchannel("A").point(lambda v: round(v * e)))
                 frame.alpha_composite(moved)
-                overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-                progress(ImageDraw.Draw(overlay), cards, i, f / max(1, total - 1), theme)
-                frame.alpha_composite(overlay)
+                if item.get("progress", True):
+                    overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                    progress(ImageDraw.Draw(overlay), cards, i, f / max(1, total - 1), theme)
+                    frame.alpha_composite(overlay)
                 n += 1
                 frame.convert("RGB").save(frames / f"{n:05d}.png", compress_level=1)
         subprocess.run([str(encoder()), str(frames), str(FPS), str(out)], check=True, stdout=subprocess.DEVNULL)
