@@ -10,4 +10,8 @@ In visita misura tu: lunghezza, larghezza e altezza di ogni stanza. La checklist
 
 Gratis, link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa

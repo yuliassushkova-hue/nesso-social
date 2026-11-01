@@ -10,4 +10,8 @@ Con una rendita di €800: €1.848 invece di €6.000 su un prezzo di €300.00
 
 Il calcolo con la tua rendita, gratis: link in bio. DPR 131/1986, L. 266/2005. È un calcolo, non una consulenza.
 
-#comprarecasa #primacasa #mutuo #casa #Milano
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo prima di firmare 📌
+Mandalo a chi sta comprando casa.
+
+#comprarecasa #primacasa #mutuo #notaio #consiglicasa

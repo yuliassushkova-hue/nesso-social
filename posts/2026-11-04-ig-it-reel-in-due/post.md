@@ -10,4 +10,8 @@ Con Nesso fate la stessa visita in due, senza vedere le risposte dell'altro. Poi
 
 Link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa

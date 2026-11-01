@@ -8,4 +8,8 @@ Una regola sui soldi: nessuna caparra prima di aver visto la casa di persona. N�
 
 E quando la vedi, hai 82 controlli in tasca. Gratis, link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa

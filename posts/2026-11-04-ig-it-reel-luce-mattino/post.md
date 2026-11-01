@@ -10,4 +10,8 @@ In visita spegni le luci e guarda la parete di fondo, non il davanzale. Nesso ti
 
 Link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Tu cosa guardi per primo in una casa? Scrivilo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa

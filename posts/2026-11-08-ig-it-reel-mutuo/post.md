@@ -11,4 +11,8 @@ Hai almeno sette giorni per valutare un'offerta vincolante, puoi portare il mutu
 Rata, imposte e spese nel calcolatore di Nesso, gratis: link in bio.
 Fonte: Banca d'Italia, Il mutuo ipotecario in parole semplici (2026).
 
-#comprarecasa #primacasa #mutuo #casa #Milano
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo prima di firmare 📌
+Mandalo a chi sta comprando casa.
+
+#comprarecasa #primacasa #mutuo #notaio #consiglicasa

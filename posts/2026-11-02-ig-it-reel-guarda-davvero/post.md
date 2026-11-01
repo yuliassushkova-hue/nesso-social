@@ -10,4 +10,8 @@ La luce in fondo alla stanza, il rumore a finestra aperta, gli angoli dietro i m
 
 Gratis, link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Tu cosa guardi per primo in una casa? Scrivilo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa

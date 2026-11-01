@@ -10,4 +10,8 @@ In Nesso punti il telefono sul bordo del tetto di fronte e l'app calcola le ore 
 
 Link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa
