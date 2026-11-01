@@ -5,10 +5,15 @@ name: rehearse
 on:
   pull_request:
     paths: ['posts/**']
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      posts:
+        description: "Comma-separated post folders to rehearse"
+        required: false
+        default: ""
 
 concurrency:
-  group: rehearse-${{ github.ref }}
+  group: rehearse  # never two at once: Instagram counts every container
   cancel-in-progress: true
 
 jobs:
@@ -17,12 +22,24 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Which posts this change adds or edits
+        id: changed
+        run: |
+          if [ -n "${{ github.event.inputs.posts }}" ]; then
+            echo "list=${{ github.event.inputs.posts }}" >> "$GITHUB_OUTPUT"
+          else
+            list=$(git diff --name-only "origin/${{ github.base_ref || 'main' }}...HEAD" -- posts | cut -d/ -f2 | sort -u | paste -sd, -)
+            echo "list=$list" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: node bin/social.mjs rehearse
         env:
           MEDIA_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          REHEARSE_ONLY: ${{ steps.changed.outputs.list }}
           IG_IT_TOKEN: ${{ secrets.IG_IT_TOKEN }}
           IG_DK_TOKEN: ${{ secrets.IG_DK_TOKEN }}
           IG_IT_ACCOUNT_ID: ${{ secrets.IG_IT_ACCOUNT_ID }}

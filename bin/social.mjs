@@ -417,7 +417,15 @@ async function publish({ dryRun }) {
 // merged, so a video Instagram refuses is found while there is time to fix it.
 async function rehearse() {
   const log = readLog();
-  const posts = readPosts().filter((post) => !log[post.id]);
+  // Only the posts a pull request adds or changes, named by the workflow: every rehearsal creates a
+  // container per post, and rehearsing a whole week several times a day trips Instagram's
+  // "too many actions" limit, which then blocks real publishing too.
+  const only = (process.env.REHEARSE_ONLY ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+  const posts = readPosts().filter((post) => !log[post.id] && only.includes(post.id));
+  if (!posts.length) {
+    console.log('nothing to rehearse: no new or changed posts');
+    return;
+  }
   let failed = 0;
   const one = async (post) => {
     const errors = validate(post);
@@ -442,7 +450,7 @@ async function rehearse() {
       }
     }
   };
-  await Promise.all([worker(), worker(), worker()]);
+  await worker(); // one at a time, gently
   console.log(`${posts.length - failed} of ${posts.length} posts would be accepted`);
   if (failed) process.exitCode = 1;
 }
