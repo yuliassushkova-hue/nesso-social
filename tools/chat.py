@@ -150,30 +150,8 @@ def pop(im, k):
     return out
 
 
-def pin(height):
-    """The Nesso pin, drawn from its own geometry (24x34 box, hole r=4.6)."""
-    s = height / 34
-    im = Image.new("RGBA", (round(24 * s), round(34 * s)), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    d.ellipse([0, 0, 24 * s, 24 * s], fill=ORANGE)
-    d.polygon([(1.2 * s, 16.5 * s), (22.8 * s, 16.5 * s), (12 * s, 34 * s)], fill=ORANGE)
-    d.ellipse([(12 - 4.6) * s, (12 - 4.6) * s, (12 + 4.6) * s, (12 + 4.6) * s], fill=(0, 0, 0, 0))
-    return im
-
-
 def wordmark(height):
-    """Pin + "Nesso" with the orange o, as the app's logo lockup."""
-    f = render.font(round(height * 0.92), 700)
-    p = pin(height)
-    gap = round(height * 0.34)
-    w = p.width + gap + f.getlength("Nesso")
-    im = Image.new("RGBA", (round(w) + 4, height + 20), (0, 0, 0, 0))
-    im.alpha_composite(p, (0, 10))
-    d = ImageDraw.Draw(im)
-    x = p.width + gap
-    d.text((x, 10 + height * 0.02), "Ness", font=f, fill=INK)
-    d.text((x + f.getlength("Ness"), 10 + height * 0.02), "o", font=f, fill=ORANGE)
-    return im
+    return render.wordmark(height, INK)
 
 
 def clip_frames(clip, frames):
@@ -319,3 +297,26 @@ if __name__ == "__main__":
     spec = runpy.run_path(sys.argv[1])
     story = spec["STORIES"][sys.argv[2]]
     print(render_story(story, sys.argv[3] if len(sys.argv) > 3 else f"/tmp/{sys.argv[2]}.mp4"))
+
+
+def sound_events(story):
+    """Where the phone sounds go: a pop for each message that arrives, keys while you type and a
+    soft send for each of yours, a whoosh on the headline, a chime on the mark."""
+    events, start = [], 0.0
+    for sc in story["scenes"]:
+        if sc["kind"] == "photo":
+            events.append((start + 0.25, "receive", 0.9, None, 0.0))
+        elif sc["kind"] == "chat":
+            for i, m in enumerate(sc["messages"]):
+                at = start + m["at"]
+                if m["from"] == "me":
+                    events.append((max(start, at - 0.95), "typing", 0.55, 0.85, 1.5 + 2.1 * i))
+                    events.append((at, "send", 0.8, None, 0.0))
+                elif m["at"] > 0:
+                    events.append((at, "receive", 0.9, None, 0.0))
+        elif sc["kind"] == "headline":
+            events.append((start + 0.05, "whoosh", 0.7, None, 0.0))
+        elif sc["kind"] == "end":
+            events.append((start + 0.15, "chime", 0.6, None, 0.0))
+        start += sc["secs"]
+    return events

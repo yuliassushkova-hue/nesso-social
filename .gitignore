@@ -6,3 +6,4 @@ tools/.frames-to-mp4
 __pycache__/
 tools/.cache/
 tools/.clip-frames
+tools/.mux
