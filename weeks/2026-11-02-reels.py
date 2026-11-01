@@ -187,3 +187,45 @@ ITEMS = [
          "Confronta\nil TAEG.", "Chiedi il PIES a più banche, prima di firmare.", "04-costi.png",
          "Prima di un mutuo per la casa, la banca ti deve il PIES: gratuito e personalizzato, prima che tu sia vincolato. Chiedilo a più banche e confronta il TAEG.\n\nHai almeno sette giorni per valutare un'offerta vincolante, puoi portare il mutuo a un'altra banca senza costi e chiuderlo prima senza penali.\n\nRata, imposte e spese nel calcolatore di Nesso, gratis: link in bio.\nFonte: Banca d'Italia, Il mutuo ipotecario in parole semplici (2026).\n\n" + TAG_COST),
 ]
+
+
+# ---------------------------------------------------------------- captions that travel
+# Every caption: the hook line first (what shows before "more"), the body, then a call to save,
+# share and comment (the three signals Instagram weighs most), the link, and five hashtags
+# (Instagram counts five at most since December 2025, so they are chosen, not piled up).
+CTA = {
+    "visit": ("Salvalo per la prossima visita 📌\nMandalo a chi sta cercando casa.",
+              "#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa"),
+    "cost": ("Salvalo prima di firmare 📌\nMandalo a chi sta comprando casa.",
+             "#comprarecasa #primacasa #mutuo #notaio #consiglicasa"),
+    "sell": ("Salvalo se vendi o affitti casa 📌\nMandalo a chi sta preparando la sua.",
+             "#vendocasa #venderecasa #homestaging #immobiliare #consiglicasa"),
+    "live": ("Salvalo se ti trasferisci 📌\nMandalo a chi cerca casa in una nuova città.",
+             "#trasferimento #nuovacitta #quartiere #cercocasa #Milano"),
+}
+QUESTION_CHAT = "Ti è mai successo? Raccontalo nei commenti 👇"
+QUESTION_FILM = {
+    "visit": "Tu cosa guardi per primo in una casa? Scrivilo nei commenti 👇",
+    "cost": "Quale spesa ti ha sorpreso di più? Scrivilo nei commenti 👇",
+    "sell": "Quale consiglio hai sentito più spesso? Scrivilo nei commenti 👇",
+    "live": "In che città cerchi casa? Scrivilo nei commenti 👇",
+}
+
+
+def _category(caption):
+    tags = caption.strip().splitlines()[-1]
+    if tags == TAG_COST:
+        return "cost"
+    if tags == TAG_SELL:
+        return "sell"
+    if tags == TAG_LIVE:
+        return "live"
+    return "visit"
+
+
+for _item in ITEMS:
+    cat = _category(_item["caption"])
+    body = "\n".join(_item["caption"].strip().splitlines()[:-1]).strip()
+    question = QUESTION_CHAT if "scenes" in _item else QUESTION_FILM[cat]
+    save, tags = CTA[cat]
+    _item["caption"] = f"{body}\n\n{question}\n{save}\n\n{tags}"

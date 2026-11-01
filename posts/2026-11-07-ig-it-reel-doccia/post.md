@@ -10,4 +10,8 @@ Apri del tutto il rubinetto della cucina, accendi anche la doccia e guarda il ge
 
 Gli altri controlli per la visita, gratis: link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa

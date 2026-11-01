@@ -10,4 +10,8 @@ Chiedi un preventivo scritto prima del preliminare, e chiedilo a più di un nota
 
 Link in bio.
 
-#comprarecasa #primacasa #mutuo #casa #Milano
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo prima di firmare 📌
+Mandalo a chi sta comprando casa.
+
+#comprarecasa #primacasa #mutuo #notaio #consiglicasa

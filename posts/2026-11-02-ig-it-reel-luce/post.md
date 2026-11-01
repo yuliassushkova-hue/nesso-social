@@ -10,4 +10,8 @@ In visita spegni le luci e guarda la parete di fondo: è lì che leggerai e lavo
 
 Gratis, link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa

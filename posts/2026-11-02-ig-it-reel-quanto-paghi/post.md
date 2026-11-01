@@ -10,4 +10,8 @@ Esempio con le regole nazionali: €300.000 da un privato, prima casa, rendita c
 
 Fai il conto sul tuo prezzo, gratis: link in bio. È un calcolo sulle regole nazionali, non una consulenza.
 
-#comprarecasa #primacasa #mutuo #casa #Milano
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo prima di firmare 📌
+Mandalo a chi sta comprando casa.
+
+#comprarecasa #primacasa #mutuo #notaio #consiglicasa

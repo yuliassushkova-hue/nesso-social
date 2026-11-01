@@ -10,4 +10,8 @@ Registro, ipotecaria e catastale, agenzia con l'IVA, imposta sul mutuo: il calco
 
 Gratis, link in bio.
 
-#comprarecasa #primacasa #mutuo #casa #Milano
+Quale spesa ti ha sorpreso di più? Scrivilo nei commenti 👇
+Salvalo prima di firmare 📌
+Mandalo a chi sta comprando casa.
+
+#comprarecasa #primacasa #mutuo #notaio #consiglicasa

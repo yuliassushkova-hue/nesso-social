@@ -10,4 +10,8 @@ Cinque domande e Nesso ti dice che abitante sei e quale quartiere ti somiglia, c
 
 Gratis, link in bio.
 
-#trasferimento #Milano #Torino #quartiere #cercocasa
+In che città cerchi casa? Scrivilo nei commenti 👇
+Salvalo se ti trasferisci 📌
+Mandalo a chi cerca casa in una nuova città.
+
+#trasferimento #nuovacitta #quartiere #cercocasa #Milano

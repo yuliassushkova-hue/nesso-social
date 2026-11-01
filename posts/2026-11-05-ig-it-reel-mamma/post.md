@@ -10,4 +10,8 @@ In visita: cammina lungo la base dei muri esterni, guarda dietro i mobili e negl
 
 Link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Ti è mai successo? Raccontalo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa

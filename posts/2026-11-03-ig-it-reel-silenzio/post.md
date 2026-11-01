@@ -10,4 +10,8 @@ In visita: telefono a metà stanza, 30 secondi a finestra aperta e 30 chiusa. Ne
 
 Link in bio.
 
-#cercocasa #visitacasa #comprarecasa #affittocasa #casa
+Tu cosa guardi per primo in una casa? Scrivilo nei commenti 👇
+Salvalo per la prossima visita 📌
+Mandalo a chi sta cercando casa.
+
+#cercocasa #visitacasa #comprarecasa #affitto #consiglicasa
