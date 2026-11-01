@@ -94,6 +94,13 @@ establish, link in bio) · *Quanto costa* (one cost rule with the figure) · *Mi
 myth and what the research found) · app screen recordings · carousels of 6 to 9 slides with a cover
 that makes the claim and a phone on it.
 
+**3D Reels (Blender).** `tools/blender/room.py` is an isometric cut-away flat in the style of
+Airbnb's Buck films (a room on a slab, rounded furniture, one soft light) with a phone carrying the
+real app screen; `coins.py` is a clay house with coins stacking beside it. A week item gets one by
+adding `"blender": {"script": "room.py"}` and a `"text_zone"` that keeps the words above the scene.
+About two minutes of rendering per second of video on this Mac, cached in `tools/.cache/`, so
+plan three or four 3D Reels a week as the leads and render them the night before the batch.
+
 **What the API cannot do**, so a person does it in the app when it matters: music from Instagram's
 library, poll and link stickers on Stories, replying to comments (until the comments permission is
 added), and anything on TikTok (a TikTok account and its Content Posting API approval come first).

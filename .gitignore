@@ -4,3 +4,4 @@ node_modules/
 tools/.frames-to-mp4
 .venv/
 __pycache__/
+tools/.cache/

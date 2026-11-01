@@ -186,7 +186,7 @@ def chip(d, text, x, y, t, size=40, fill=None, fg=None):
     return y + h
 
 
-def card_layer(card, series, theme):
+def card_layer(card, series, theme, zone=(TOP, BOTTOM)):
     """The card's words on a transparent layer, laid out once and centred in the safe area."""
     t = THEMES[theme]
     layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -237,7 +237,7 @@ def card_layer(card, series, theme):
             y = draw_text(b, card["source"], font(38, 600), y + 50, t, color=t["soft"])
     else:
         raise ValueError(f"unknown card kind {kind}")
-    offset = TOP + max(0, (BOTTOM - TOP - y) // 2) - 60
+    offset = zone[0] + max(0, (zone[1] - zone[0] - y) // 2) - (60 if zone == (TOP, BOTTOM) else 0)
     layer.alpha_composite(body.crop((0, 0, W, H - offset)), (0, offset))
     return layer
 
@@ -270,22 +270,51 @@ def card_theme(item, card):
     return card.get("theme", item.get("theme", "violet"))
 
 
+BLENDER = "/Applications/Blender.app/Contents/MacOS/Blender"
+
+
+CACHE = ROOT / "tools/.cache"
+
+
+def blender_frames(spec, total_frames):
+    """Render a 3D scene from tools/blender/ to frames, cached by the script, its arguments and the
+    length, so changing the words over a scene does not render it again."""
+    import hashlib
+    script = ROOT / "tools/blender" / spec["script"]
+    args = [str(a) for a in spec.get("args", [])]
+    seconds = total_frames / FPS
+    digest = hashlib.sha256((script.read_text() + repr(args) + f"{seconds:.3f}").encode()).hexdigest()[:12]
+    out = CACHE / f"{script.stem}-{digest}"
+    frames = sorted(out.glob("*.jpg"))
+    if len(frames) < total_frames:
+        out.mkdir(parents=True, exist_ok=True)
+        cmd = [BLENDER, "-b", "-P", str(script), "--", str(out), f"{seconds:.3f}", *args]
+        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        frames = sorted(out.glob("*.jpg"))
+    return None, frames
+
+
 def render_reel(item, out):
     cards = item["cards"]
     grounds, frames = {}, Path(tempfile.mkdtemp())
     n = 0
+    total_frames = sum(round(c.get("secs", 2.5) * FPS) for c in cards)
+    scene_dir, scene = (None, None)
+    if item.get("blender"):
+        scene_dir, scene = blender_frames(item["blender"], total_frames)
+    zone = tuple(item.get("text_zone", (TOP, BOTTOM)))
     try:
         for i, card in enumerate(cards):
             theme = card_theme(item, card)
             if theme not in grounds:
                 grounds[theme] = ground(theme).convert("RGBA")
             base = grounds[theme]
-            layer = card_layer(card, item.get("series"), theme)
+            layer = card_layer(card, item.get("series"), theme, zone)
             total = round(card.get("secs", 2.5) * FPS)
             fade = round(0.3 * FPS)
             for f in range(total):
                 e = ease(min(1, f / fade))
-                frame = base.copy()
+                frame = Image.open(scene[min(n, len(scene) - 1)]).convert("RGBA") if scene else base.copy()
                 moved = Image.new("RGBA", (W, H), (0, 0, 0, 0))
                 moved.paste(layer, (0, round(70 * (1 - e))))
                 if e < 1:
@@ -299,6 +328,8 @@ def render_reel(item, out):
         subprocess.run([str(encoder()), str(frames), str(FPS), str(out)], check=True, stdout=subprocess.DEVNULL)
     finally:
         shutil.rmtree(frames)
+        if scene_dir:
+            shutil.rmtree(scene_dir)
     return n / FPS
 
 
