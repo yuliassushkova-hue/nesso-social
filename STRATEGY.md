@@ -83,7 +83,7 @@ of signing something they will regret. They care most about **not being fooled a
    every image and video without publishing, so a file Instagram would refuse is found before the
    week starts.
 3. **The founder approves by merging.** Anything to drop is deleted from the branch first.
-4. **Publish runs hourly.** Rome times: Reels 08:00, 13:00, 20:00; carousels 18:00 (Mon, Wed, Fri,
+4. **Publish runs every ten minutes.** Rome times: Reels 08:00, 13:00, 20:00; carousels 18:00 (Mon, Wed, Fri,
    Sun); Stories 09:30, 15:30, 21:30.
 5. **Monday: what worked.** Reach, saves, shares and profile visits per post (Instagram Insights),
    and sign-ups with `via=instagram` in `/admin`. Series that do not travel are replaced the next

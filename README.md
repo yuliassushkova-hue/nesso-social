@@ -12,8 +12,8 @@ Actions. `SETUP.md` is how the accounts and secrets are connected (in Russian).
 3. **You read the PR and merge it. Merging is the approval.** Nothing on a branch is ever published.
    To hold a post back, don't merge it. To cancel one already on `main`, delete its folder before its
    time.
-4. **`publish` runs every hour at :07** and publishes each post whose time has passed, so a post set
-   for 18:00 goes out between 18:07 and about 18:30 (GitHub's schedule can run late).
+4. **`publish` runs every ten minutes** and publishes each post whose time has passed, so a post set
+   for 18:00 goes out a few minutes after 18:00 (GitHub runs a schedule late or skips it when busy, which is why it runs this often; Actions minutes are free on a public repository).
 5. **`published.json` records each post** with its link, committed back to `main`. A post in that
    file is never published again. A post more than 36 hours late is skipped and reported instead of
    going out days after its moment.
