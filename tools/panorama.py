@@ -11,6 +11,7 @@ spec = {
   "phones": [{"mock", "x" (centre), "y" (top), "height", "tilt"}],
   "mark": {"x" (centre), "y", "height", "word": "white"|"ink"},  # straight on the photo, no plate
   "hint": True,
+  "hint_text": "Swipe  →",  # optional, the language of the post; Italian by default
 }
 Photos are blended into each other over `feather` pixels, so no cut shows between them.
 
@@ -100,7 +101,7 @@ def render_panorama(spec, out_dir, feather=320):
         if i == 0 and spec.get("hint", True):
             dd = ImageDraw.Draw(sl)
             fh = render.font(40, 800)
-            hint = "Scorri  →"
+            hint = spec.get("hint_text", "Scorri  →")
             bw = fh.getlength(hint) + 70
             dd.rounded_rectangle([SW - 96 - bw, SH - 140, SW - 96, SH - 60], radius=40, fill=render.WHITE)
             dd.text((SW - 96 - bw + 35, SH - 125), hint, font=fh, fill=render.INK)

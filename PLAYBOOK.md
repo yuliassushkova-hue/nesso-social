@@ -112,16 +112,18 @@ actions»). Проверка `rehearse` пробует только посты, 
 - **Итальянские термины:** при первом упоминании объяснить. Например, «registration tax (imposta di
   registro)», «the PIES, the bank's sheet with every cost of the mortgage».
 - **Призыв:** «Try Nesso · link in bio». Серия называется *Before you sign*.
-- **Экраны:** приложение на английском. Нужны `screens-en/` и `mockups-en/`: в
-  `marketing-mockups.py` добавить таблицу английских заголовков.
-- **Хэштеги:** по теме. Например, #movingtoitaly #expatsinitaly #househuntingitaly #milanexpat
-  #buyinginitaly; перед использованием проверить, что они живые.
+- **Экраны:** приложение на английском: `screens-en/` и `mockups-en/` (имена файлов те же, что у
+  итальянских). Их делает `python3 scripts/marketing-mockups.py en`. Сняты 1 ноября с main, на
+  локальной копии с тестовым аккаунтом: на живом nesso.fit нужен вход в аккаунт.
+- **Хэштеги:** #movingtoitaly #househunting #livinginitaly #expatsinitaly #italianrealestate
+  (просмотр), #italianproperty вместо #livinginitaly (расходы), #homestaging (продажа),
+  #expatlife #lifeinitaly (переезд). Проверено, что ими пользуются. #househuntingitaly и
+  #buyinginitaly подтвердить не удалось, их не берём.
+- **Цифры:** в английском тексте английская запись: €300,000, €14,687.50. Сумма та же.
 - **Ссылка в bio:** `nesso.fit/?via=instagram` (английская главная).
-- **Код:** канала `ig-en` пока нет. Нужно:
-  - добавить его в `CHANNELS` в `bin/social.mjs`;
-  - добавить `IG_EN_TOKEN` и `IG_EN_ACCOUNT_ID` в 4 workflow (publish, rehearse, refresh-tokens,
-    whoami);
-  - добавить id в `accounts.json`.
+- **Код:** канал `ig-en` есть в `bin/social.mjs`, секреты `IG_EN_TOKEN` и `IG_EN_ACCOUNT_ID`
+  передаются в workflow. Осталось вписать id аккаунта в `accounts.json`, когда аккаунт появится.
+- **Первая неделя:** `weeks/2026-11-09-en*.py`, перевод итальянской недели 2–8 ноября.
 
 ### Датский: аккаунт есть в плане, канал `ig-dk` уже в коде
 

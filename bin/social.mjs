@@ -10,7 +10,7 @@
 //   node bin/social.mjs list                   the schedule, with each post's state
 //   node bin/social.mjs publish [--dry-run]    publish what is due
 //   node bin/social.mjs whoami                 which account each token reaches
-//   node bin/social.mjs refresh-tokens         refresh the four tokens into GitHub secrets
+//   node bin/social.mjs refresh-tokens         refresh the tokens into GitHub secrets
 //   node bin/social.mjs exchange-threads NAME  short-lived Threads token -> long-lived secret NAME
 
 import { readFileSync, readdirSync, existsSync, writeFileSync, statSync } from 'node:fs';
@@ -35,6 +35,7 @@ const MAX_LATE_HOURS = 36;
 export const CHANNELS = {
   'ig-it': { platform: 'instagram', token: 'IG_IT_TOKEN', account: 'IG_IT_ACCOUNT_ID' },
   'ig-dk': { platform: 'instagram', token: 'IG_DK_TOKEN', account: 'IG_DK_ACCOUNT_ID' },
+  'ig-en': { platform: 'instagram', token: 'IG_EN_TOKEN', account: 'IG_EN_ACCOUNT_ID' },
   'threads-it': { platform: 'threads', token: 'THREADS_IT_TOKEN' },
   'threads-dk': { platform: 'threads', token: 'THREADS_DK_TOKEN' },
 };
