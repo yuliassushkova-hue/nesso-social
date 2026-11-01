@@ -568,6 +568,10 @@ def main(argv):
                 render_slide(slide, item, i, len(item["slides"]), folder / name)
                 names.append(name)
             media, note = ", ".join(names), f"{len(names)} slides"
+        elif kind == "reel" and "scenes" in item:
+            import chat  # chat stories: tools/chat.py
+            media = "reel.mp4"
+            note = f"{chat.render_story(item, folder / media):.1f}s chat"
         elif kind == "reel" and "video" in item:
             media = "reel.mp4"
             shutil.copyfile(Path(item["video"]).expanduser(), folder / media)

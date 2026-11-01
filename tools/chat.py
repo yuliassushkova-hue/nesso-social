@@ -220,7 +220,12 @@ def scene_frames(sc, tmp_dirs):
         images = []
         for m in msgs:
             if "photo" in m:
-                ph = Image.open(m["photo"]) if isinstance(m["photo"], str) else m["photo"]
+                src = m["photo"]
+                if isinstance(src, dict):  # one frame out of a clip
+                    d, fr = clip_frames(src, 1)
+                    tmp_dirs.append(d)
+                    src = str(fr[0])
+                ph = Image.open(Path(src).expanduser()) if isinstance(src, str) else src
                 images.append(bubble(None, m["from"] == "me", photo=ph))
             else:
                 images.append(bubble(m["text"], m["from"] == "me"))
