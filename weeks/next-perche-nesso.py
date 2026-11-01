@@ -14,7 +14,7 @@ REEL = {"scenes": [
     ]},
     {"kind": "headline", "secs": 2.8, "text": "L'AI non è nella stanza.\nIl tuo telefono sì.",
      "sub": "Nesso misura rumore, pavimento e sole, in visita.", "phone": M + "07-misura-rumore-finestra.png", "size": 104},
-    {"kind": "end", "secs": 2.0, "line": "Prima di firmare.", "cta": "Gratis · link in bio"},
+    {"kind": "end", "secs": 2.0, "line": "Prima di firmare.", "cta": "Prova Nesso · link in bio"},
 ]}
 CAROUSEL = {"series": "Perché Nesso", "theme": "orange", "slides": [
     {"text": "Chiedi a un chatbot se la casa è *rumorosa.*", "sub": "Non lo sa. Non è lì.", "photo": M + "07-misura-rumore-finestra.png"},

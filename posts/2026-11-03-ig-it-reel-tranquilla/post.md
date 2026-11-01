@@ -8,7 +8,7 @@ Alla visita la finestra è quasi sempre chiusa. Aprila.
 
 30 secondi a finestra aperta, 30 a finestra chiusa, telefono fermo nello stesso punto: Nesso confronta le due misure. La cifra assoluta cambia da telefono a telefono, la differenza no.
 
-Gratis, link in bio.
+Prova Nesso: link in bio.
 
 Ti è mai successo? Raccontalo nei commenti 👇
 Salvalo per la prossima visita 📌

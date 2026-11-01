@@ -8,7 +8,7 @@ Il caffè sotto casa, il parco, la scuola, quanti minuti a piedi.
 
 Cinque domande e Nesso ti dice che abitante sei e quale quartiere ti somiglia, con dati pubblicati. Dieci città italiane.
 
-Gratis, link in bio.
+Prova Nesso: link in bio.
 
 In che città cerchi casa? Scrivilo nei commenti 👇
 Salvalo se ti trasferisci 📌
