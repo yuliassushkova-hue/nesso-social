@@ -94,6 +94,12 @@ establish, link in bio) · *Quanto costa* (one cost rule with the figure) · *Mi
 myth and what the research found) · app screen recordings · carousels of 6 to 9 slides with a cover
 that makes the claim and a phone on it.
 
+**Real footage (the lead format since 2026-11-01).** The founder's bar is Airbnb's "Same Room"
+or real life, never home-made 3D people. A week item takes `"clips": [{"file", "start", "secs"}]`
+(stock clips under the Pexels License, kept with their licence in ~/Documents/GitHub/nesso-assets/pexels)
+and the words go over a violet wash at the top. Our own footage of a phone measuring at a viewing,
+filmed with the owner's yes, beats any stock clip.
+
 **3D Reels (Blender).** `tools/blender/room.py` is an isometric cut-away flat in the style of
 Airbnb's Buck films (a room on a slab, rounded furniture, one soft light) with a phone carrying the
 real app screen; `coins.py` is a clay house with coins stacking beside it. A week item gets one by

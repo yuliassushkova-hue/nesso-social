@@ -294,6 +294,39 @@ def blender_frames(spec, total_frames):
     return None, frames
 
 
+CLIP_TOOL_SRC = ROOT / "tools/clip-frames.swift"
+CLIP_TOOL = ROOT / "tools/.clip-frames"
+
+
+def clip_frames(clips, total_frames):
+    """Real footage, cut and centre-cropped to 1080x1920 at 30 fps, one clip after another.
+    Each clip is {"file": path, "start": seconds, "secs": seconds}; the last one runs to the end."""
+    if not CLIP_TOOL.exists():
+        subprocess.run(["swiftc", "-O", "-o", str(CLIP_TOOL), str(CLIP_TOOL_SRC)], check=True)
+    out = Path(tempfile.mkdtemp())
+    index = 1
+    for i, clip in enumerate(clips):
+        frames = round(clip["secs"] * FPS) if i < len(clips) - 1 else total_frames - (index - 1)
+        if frames <= 0:
+            break
+        subprocess.run([str(CLIP_TOOL), str(Path(clip["file"]).expanduser()), str(clip.get("start", 0)),
+                        f"{frames / FPS:.4f}", str(out), str(index)], check=True)
+        index += frames
+    return out, sorted(out.glob("*.jpg"))
+
+
+def scrim(theme):
+    """A wash of the theme's deep colour over the top of real footage, so white words read on it."""
+    t = THEMES[theme]
+    deep = t["stops"][-1] if theme != "orange" else NIGHT
+    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    for y in range(0, 1250):
+        a = round(215 * max(0.0, 1 - y / 1250) ** 1.3)
+        d.line([(0, y), (W, y)], fill=deep + (a,))
+    return layer
+
+
 def render_reel(item, out):
     cards = item["cards"]
     grounds, frames = {}, Path(tempfile.mkdtemp())
@@ -302,6 +335,9 @@ def render_reel(item, out):
     scene_dir, scene = (None, None)
     if item.get("blender"):
         scene_dir, scene = blender_frames(item["blender"], total_frames)
+    if item.get("clips"):
+        scene_dir, scene = clip_frames(item["clips"], total_frames)
+    wash = scrim(item.get("theme", "violet")) if item.get("clips") else None
     zone = tuple(item.get("text_zone", (TOP, BOTTOM)))
     try:
         for i, card in enumerate(cards):
@@ -315,6 +351,8 @@ def render_reel(item, out):
             for f in range(total):
                 e = ease(min(1, f / fade))
                 frame = Image.open(scene[min(n, len(scene) - 1)]).convert("RGBA") if scene else base.copy()
+                if wash is not None:
+                    frame.alpha_composite(wash)
                 moved = Image.new("RGBA", (W, H), (0, 0, 0, 0))
                 moved.paste(layer, (0, round(70 * (1 - e))))
                 if e < 1:
