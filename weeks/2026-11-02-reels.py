@@ -55,10 +55,13 @@ def film(day, slug, shots, caption):
         if "\n" in words or len(words) > 12:
             card["size"] = 124
         if phone:
-            card.update({"phone": M + phone, "phone_top": 1080, "phone_height": 900, "size": 116})
+            # the app takes the screen: big and centred, the words in one line above it
+            card.update({"phone": M + phone, "phone_top": 400, "phone_height": 1480, "phone_tilt": -3, "phone_dx": 0,
+                         "size": 96, "text_top": True, "text_y": 0})
+            card["text"] = words.replace("\n", " ")
         cards.append(card)
     clips.append({"file": P + "40187579.mp4", "start": 0.5, "secs": 2.3})
-    cards.append({"kind": "serif", "text": "*Nesso*", "size": 170, "sub": "Prima di firmare · link in bio", "secs": 2.3})
+    cards.append({"kind": "brand", "sub": "Prima di firmare · link in bio", "secs": 2.3})
     # soft piano under every warm film, the two tracks taking turns day by day
     music = "music-beautiful-dream" if day % 2 == 0 else "music-classical-vibes"
     return {"id": f"r-{slug}", "type": "reel", "channel": "ig-it", "at": at(day, "13:00"), "slug": f"reel-{slug}",

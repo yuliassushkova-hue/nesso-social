@@ -270,6 +270,20 @@ def card_layer(card, series, theme, zone=(TOP, BOTTOM)):
             b.text(((W - subw) / 2, y + 30), card["sub"], font=fs, fill=cream)
             y += 30 + fs.size
         y += 220
+    elif kind == "brand":
+        # the real mark over footage, white word, orange pin and o, with a soft dark halo behind
+        wm = wordmark(card.get("height", 150), WHITE)
+        y = 220
+        halo = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ImageDraw.Draw(halo).ellipse([60, y - 140, W - 60, y + wm.height + 260], fill=(20, 10, 4, 120))
+        body.alpha_composite(halo.filter(ImageFilter.GaussianBlur(90)))
+        body.alpha_composite(wm, ((W - wm.width) // 2, y))
+        y += wm.height + 40
+        if card.get("sub"):
+            fs = font(card.get("sub_size", 48), 700)
+            b.text(((W - fs.getlength(card["sub"])) / 2, y), card["sub"], font=fs, fill=WHITE)
+            y += fs.size
+        y += 220
     elif kind == "caption":
         # Words on solid blocks, one block per line, the way captions sit on a feed video:
         # readable on any footage without darkening it.
@@ -297,17 +311,44 @@ def card_layer(card, series, theme, zone=(TOP, BOTTOM)):
         phone = phone.resize((round(phone.width * ph / phone.height), ph), Image.LANCZOS)
         tilted = phone.rotate(card.get("phone_tilt", -5), resample=Image.BICUBIC, expand=True)
         shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        px0, py0 = (W - tilted.width) // 2 + 60, card.get("phone_top", 860)
+        px0, py0 = (W - tilted.width) // 2 + card.get("phone_dx", 60), card.get("phone_top", 860)
         ImageDraw.Draw(shadow).rounded_rectangle([px0 + 30, py0 + 40, px0 + tilted.width, py0 + tilted.height], radius=90, fill=(20, 10, 40, 120))
         layer.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(35)))
         layer.paste(tilted, (px0, py0), tilted)
-    if kind == "caption":
-        offset = card.get("y", 330)
+    if kind == "caption" or card.get("text_top"):
+        offset = card.get("y", 330) if kind == "caption" else card.get("text_y", 0)
         layer.alpha_composite(body.crop((0, 0, W, H - offset)), (0, offset))
         return layer
     offset = zone[0] + max(0, (zone[1] - zone[0] - y) // 2) - (60 if zone == (TOP, BOTTOM) else 0)
     layer.alpha_composite(body.crop((0, 0, W, H - offset)), (0, offset))
     return layer
+
+
+def pin_image(height):
+    """The Nesso pin from its own geometry (a 24x34 box, a hole of r=4.6 at the centre of the head)."""
+    s = height / 34
+    im = Image.new("RGBA", (round(24 * s), round(34 * s)), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.ellipse([0, 0, 24 * s, 24 * s], fill=ORANGE)
+    d.polygon([(1.2 * s, 16.5 * s), (22.8 * s, 16.5 * s), (12 * s, 34 * s)], fill=ORANGE)
+    d.ellipse([(12 - 4.6) * s, (12 - 4.6) * s, (12 + 4.6) * s, (12 + 4.6) * s], fill=(0, 0, 0, 0))
+    return im
+
+
+def wordmark(height, word=INK):
+    """The app's lockup: the orange pin, then "Ness" in the word colour and the "o" in orange.
+    The word is ink on light grounds and white on footage, the way the app places it."""
+    f = font(round(height * 0.92), 700)
+    p = pin_image(height)
+    gap = round(height * 0.34)
+    w = p.width + gap + f.getlength("Nesso")
+    im = Image.new("RGBA", (round(w) + 4, height + 20), (0, 0, 0, 0))
+    im.alpha_composite(p, (0, 10))
+    d = ImageDraw.Draw(im)
+    x = p.width + gap
+    d.text((x, 10 + height * 0.02), "Ness", font=f, fill=word)
+    d.text((x + f.getlength("Ness"), 10 + height * 0.02), "o", font=f, fill=ORANGE)
+    return im
 
 
 def ease(t):

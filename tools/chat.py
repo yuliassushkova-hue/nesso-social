@@ -150,30 +150,8 @@ def pop(im, k):
     return out
 
 
-def pin(height):
-    """The Nesso pin, drawn from its own geometry (24x34 box, hole r=4.6)."""
-    s = height / 34
-    im = Image.new("RGBA", (round(24 * s), round(34 * s)), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    d.ellipse([0, 0, 24 * s, 24 * s], fill=ORANGE)
-    d.polygon([(1.2 * s, 16.5 * s), (22.8 * s, 16.5 * s), (12 * s, 34 * s)], fill=ORANGE)
-    d.ellipse([(12 - 4.6) * s, (12 - 4.6) * s, (12 + 4.6) * s, (12 + 4.6) * s], fill=(0, 0, 0, 0))
-    return im
-
-
 def wordmark(height):
-    """Pin + "Nesso" with the orange o, as the app's logo lockup."""
-    f = render.font(round(height * 0.92), 700)
-    p = pin(height)
-    gap = round(height * 0.34)
-    w = p.width + gap + f.getlength("Nesso")
-    im = Image.new("RGBA", (round(w) + 4, height + 20), (0, 0, 0, 0))
-    im.alpha_composite(p, (0, 10))
-    d = ImageDraw.Draw(im)
-    x = p.width + gap
-    d.text((x, 10 + height * 0.02), "Ness", font=f, fill=INK)
-    d.text((x + f.getlength("Ness"), 10 + height * 0.02), "o", font=f, fill=ORANGE)
-    return im
+    return render.wordmark(height, INK)
 
 
 def clip_frames(clip, frames):
