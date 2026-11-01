@@ -1,7 +1,7 @@
 name: publish
 
-# Hourly, at seven past: a private repository has 2000 free Actions minutes a month,
-# and every 15 minutes would spend about 2900 of them.
+# Every ten minutes: GitHub runs schedules late or skips them when busy, and Actions minutes
+# are free on a public repository. A private one would need this slowed down (2000 minutes a month).
 on:
   schedule:
     - cron: '*/10 * * * *'
