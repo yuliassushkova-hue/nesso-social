@@ -119,3 +119,10 @@
 - *«Dipende.» Ecco cosa risponde chi non ha visto la casa.*
 - *Il chatbot ha trovato la legge. Ma era quella giusta?* → *ogni riga con la sua norma accanto*
 - *L'agente conosce la casa. Tu conosci te.* (про сравнение вдвоём и свои приоритеты)
+
+## 8. Карусели
+
+- **Одна длинная картинка, разрезанная на слайды** (`tools/panorama.py`). Фраза начинается на одном слайде и заканчивается на следующем, телефон стоит на стыке. Фотографии на фоне плавно переходят друг в друга, стыка не видно.
+- **История, а не факты:** боль → поворот → Nesso решает → облегчение.
+- **Слова, понятные за 2 секунды.** Никаких «OMI», «ISTAT», «DPR», «rendita catastale» на слайде. Источники и законы уходят в подпись.
+- **Яркие фотографии с людьми и квартирами** на фоне (Pexels License). Не голый цвет.
