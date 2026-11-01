@@ -1,0 +1,31 @@
+name: rehearse
+
+# On every pull request that adds posts: Instagram and Threads fetch and process each file exactly
+# as they will on the day, and nothing is published. A red check means a post would fail.
+on:
+  pull_request:
+    paths: ['posts/**']
+  workflow_dispatch: {}
+
+concurrency:
+  group: rehearse-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rehearse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node bin/social.mjs rehearse
+        env:
+          MEDIA_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          IG_IT_TOKEN: ${{ secrets.IG_IT_TOKEN }}
+          IG_DK_TOKEN: ${{ secrets.IG_DK_TOKEN }}
+          IG_IT_ACCOUNT_ID: ${{ secrets.IG_IT_ACCOUNT_ID }}
+          IG_DK_ACCOUNT_ID: ${{ secrets.IG_DK_ACCOUNT_ID }}
+          THREADS_IT_TOKEN: ${{ secrets.THREADS_IT_TOKEN }}
+          THREADS_DK_TOKEN: ${{ secrets.THREADS_DK_TOKEN }}

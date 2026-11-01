@@ -245,7 +245,10 @@ async function whoIs(platform, token, accountId) {
   return { id: me.id, username: me.username };
 }
 
-async function publishInstagram(post, token, urls, accountId) {
+// Builds the platform's container for a post and waits until the platform has fetched and
+// processed every file. Nothing is visible until the container is published, so a rehearsal can
+// stop here: an unpublished container expires on its own after a day.
+async function prepareInstagram(post, token, urls, accountId) {
   const me = await igAccount(token, accountId);
   const IG = me.base; // the rest of this function speaks to whichever host the token belongs to
   const create = (params) => api('POST', `${IG}/${me.id}/media`, { ...params, access_token: token });
@@ -266,12 +269,17 @@ async function publishInstagram(post, token, urls, accountId) {
     container = await create({ media_type: 'CAROUSEL', children: children.join(','), caption: post.caption });
   }
   await waitReady(IG, container.id, token, 'status_code');
-  const published = await api('POST', `${IG}/${me.id}/media_publish`, { creation_id: container.id, access_token: token });
-  const info = await api('GET', `${IG}/${published.id}`, { fields: 'permalink', access_token: token }).catch(() => ({}));
+  return { me, container };
+}
+
+async function publishInstagram(post, token, urls, accountId) {
+  const { me, container } = await prepareInstagram(post, token, urls, accountId);
+  const published = await api('POST', `${me.base}/${me.id}/media_publish`, { creation_id: container.id, access_token: token });
+  const info = await api('GET', `${me.base}/${published.id}`, { fields: 'permalink', access_token: token }).catch(() => ({}));
   return { mediaId: published.id, permalink: info.permalink ?? null, account: me.username };
 }
 
-async function publishThreads(post, token, urls) {
+async function prepareThreads(post, token, urls) {
   const me = await whoIs('threads', token);
   const create = (params) => api('POST', `${THREADS}/${me.id}/threads`, { ...params, access_token: token });
   const mediaParams = (url) => (isVideo(url) ? { media_type: 'VIDEO', video_url: url } : { media_type: 'IMAGE', image_url: url });
@@ -288,6 +296,11 @@ async function publishThreads(post, token, urls) {
     container = await create({ media_type: 'CAROUSEL', children: children.join(','), text: post.caption });
   }
   await waitReady(THREADS, container.id, token, 'status');
+  return { me, container };
+}
+
+async function publishThreads(post, token, urls) {
+  const { me, container } = await prepareThreads(post, token, urls);
   const published = await api('POST', `${THREADS}/${me.id}/threads_publish`, { creation_id: container.id, access_token: token });
   const info = await api('GET', `${THREADS}/${published.id}`, { fields: 'permalink', access_token: token }).catch(() => ({}));
   return { mediaId: published.id, permalink: info.permalink ?? null, account: me.username };
@@ -298,7 +311,8 @@ async function publishThreads(post, token, urls) {
 // variables are set, is used instead (for a private repository).
 async function mediaUrl(post, name) {
   if (process.env.R2_BUCKET) return uploadMedia(post, name);
-  const { GITHUB_REPOSITORY: repo, GITHUB_SHA: sha } = process.env;
+  const repo = process.env.GITHUB_REPOSITORY;
+  const sha = process.env.MEDIA_SHA || process.env.GITHUB_SHA; // a pull request runs on a merge commit; its files are at the head
   if (!repo || !sha) throw new Error('media needs either the R2 variables or a GitHub Actions run');
   const path = relative(ROOT, join(post.dir, name)).split(sep).map(encodeURIComponent).join('/');
   const url = `https://raw.githubusercontent.com/${repo}/${sha}/${path}`;
@@ -398,6 +412,41 @@ async function publish({ dryRun }) {
   if (failed) process.exitCode = 1;
 }
 
+// Every post not yet published, whatever its time: the platform fetches and processes each file
+// exactly as it will on the day, and nothing is published. Run on a week's branch before it is
+// merged, so a video Instagram refuses is found while there is time to fix it.
+async function rehearse() {
+  const log = readLog();
+  const posts = readPosts().filter((post) => !log[post.id]);
+  let failed = 0;
+  const one = async (post) => {
+    const errors = validate(post);
+    if (errors.length) throw new Error(errors.join('; '));
+    const channel = CHANNELS[post.channel];
+    const token = process.env[channel.token];
+    if (!token) throw new Error(`secret ${channel.token} is not set`);
+    const urls = [];
+    for (const name of post.media) urls.push(await mediaUrl(post, name));
+    if (channel.platform === 'instagram') await prepareInstagram(post, token, urls, accountIdFor(post.channel));
+    else await prepareThreads(post, token, urls);
+  };
+  const queue = [...posts];
+  const worker = async () => {
+    for (let post = queue.shift(); post; post = queue.shift()) {
+      try {
+        await one(post);
+        console.log(`✓ ${post.id}  accepted, not published`);
+      } catch (error) {
+        failed++;
+        console.log(`✗ ${post.id}: ${error.message}`);
+      }
+    }
+  };
+  await Promise.all([worker(), worker(), worker()]);
+  console.log(`${posts.length - failed} of ${posts.length} posts would be accepted`);
+  if (failed) process.exitCode = 1;
+}
+
 async function whoami() {
   for (const [name, channel] of Object.entries(CHANNELS)) {
     const token = process.env[channel.token];
@@ -458,6 +507,7 @@ const commands = {
   list,
   publish: () => publish({ dryRun: process.argv.includes('--dry-run') }),
   whoami,
+  rehearse,
   'refresh-tokens': refreshTokens,
   'exchange-threads': () => exchangeThreads(arg),
 };

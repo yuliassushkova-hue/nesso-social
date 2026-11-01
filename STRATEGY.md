@@ -67,4 +67,33 @@ of signing something they will regret. They care most about **not being fooled a
   Recheck an example on the live calculator before posting it.
 - Say *è un calcolo sulle regole nazionali, non una consulenza* where a post adds up costs.
 - No em dashes. Italian says *tu*. Do not promote Concierge.
+- **Write like a person, not a chatbot.** Follow the `plain-human-writing` skill and run its scan on
+  every caption and on-screen line before a post goes in a batch:
+  `python3 ~/.claude/skills/plain-human-writing/scripts/scan.py --lang it post.md`. It catches
+  *gioca un ruolo fondamentale*, *non solo… ma anche*, *nel cuore di*, *è importante notare*, emoji
+  bullets and Markdown that will not render.
 - A paid or gifted post carries *Pubblicità* / *ADV* (Italy) or *Reklame* (Denmark).
+
+## The weekly cycle
+
+1. **Sunday: the batch.** A content session writes `weeks/<monday>.py` (every caption, card and
+   slide, with where each figure comes from), runs `tools/render.py` on it, and opens one pull
+   request with the whole week in `posts/`.
+2. **The PR checks itself.** `check` validates every post; `rehearse` has Instagram fetch and process
+   every image and video without publishing, so a file Instagram would refuse is found before the
+   week starts.
+3. **The founder approves by merging.** Anything to drop is deleted from the branch first.
+4. **Publish runs hourly.** Rome times: Reels 08:00, 13:00, 20:00; carousels 18:00 (Mon, Wed, Fri,
+   Sun); Stories 09:30, 15:30, 21:30.
+5. **Monday: what worked.** Reach, saves, shares and profile visits per post (Instagram Insights),
+   and sign-ups with `via=instagram` in `/admin`. Series that do not travel are replaced the next
+   Sunday; the volume stays.
+
+**Formats.** *Prima di firmare* (one viewing check: hook, the app's steps, what it does not
+establish, link in bio) · *Quanto costa* (one cost rule with the figure) · *Mito o no* (a selling
+myth and what the research found) · app screen recordings · carousels of 6 to 9 slides with a cover
+that makes the claim and a phone on it.
+
+**What the API cannot do**, so a person does it in the app when it matters: music from Instagram's
+library, poll and link stickers on Stories, replying to comments (until the comments permission is
+added), and anything on TikTok (a TikTok account and its Content Posting API approval come first).
