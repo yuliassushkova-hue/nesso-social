@@ -235,8 +235,41 @@ def card_layer(card, series, theme, zone=(TOP, BOTTOM)):
             y = draw_text(b, card["sub"], font(52, 600), y + 40, t, color=t["soft"], leading=1.22)
         if card.get("source"):
             y = draw_text(b, card["source"], font(38, 600), y + 50, t, color=t["soft"])
+    elif kind == "caption":
+        # Words on solid blocks, one block per line, the way captions sit on a feed video:
+        # readable on any footage without darkening it.
+        styles = {"white": (WHITE, INK), "violet": (VIOLET, WHITE), "orange": (ORANGE, WHITE), "ink": (INK, WHITE)}
+        for blk in card["blocks"]:
+            f = font(blk.get("size", 104), 800)
+            fill, fg = styles[blk.get("style", "white")]
+            pad_x, pad_y = round(f.size * 0.32), round(f.size * 0.16)
+            for line in wrap(blk["text"].replace("*", ""), f, RIGHT - LEFT - 2 * pad_x):
+                words = " ".join("".join(p for p, _ in w) for w in line)
+                w = f.getlength(words)
+                top_, bottom_ = f.getbbox("Hg")[1], f.getbbox("Hg")[3]
+                h = bottom_ - top_
+                x0 = LEFT if card.get("align") != "center" else (W - w) / 2 - pad_x
+                b.rounded_rectangle([x0, y, x0 + w + 2 * pad_x, y + h + 2 * pad_y], radius=round(f.size * 0.2), fill=fill)
+                b.text((x0 + pad_x, y + pad_y - top_), words, font=f, fill=fg)
+                y += h + 2 * pad_y + 10
+            y += 22
     else:
         raise ValueError(f"unknown card kind {kind}")
+    if card.get("phone"):
+        # The real app screen rises into the lower half of the frame.
+        phone = phone_crop(card["phone"])
+        ph = card.get("phone_height", 1060)
+        phone = phone.resize((round(phone.width * ph / phone.height), ph), Image.LANCZOS)
+        tilted = phone.rotate(card.get("phone_tilt", -5), resample=Image.BICUBIC, expand=True)
+        shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        px0, py0 = (W - tilted.width) // 2 + 60, card.get("phone_top", 860)
+        ImageDraw.Draw(shadow).rounded_rectangle([px0 + 30, py0 + 40, px0 + tilted.width, py0 + tilted.height], radius=90, fill=(20, 10, 40, 120))
+        layer.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(35)))
+        layer.paste(tilted, (px0, py0), tilted)
+    if kind == "caption":
+        offset = card.get("y", 330)
+        layer.alpha_composite(body.crop((0, 0, W, H - offset)), (0, offset))
+        return layer
     offset = zone[0] + max(0, (zone[1] - zone[0] - y) // 2) - (60 if zone == (TOP, BOTTOM) else 0)
     layer.alpha_composite(body.crop((0, 0, W, H - offset)), (0, offset))
     return layer
@@ -337,7 +370,7 @@ def render_reel(item, out):
         scene_dir, scene = blender_frames(item["blender"], total_frames)
     if item.get("clips"):
         scene_dir, scene = clip_frames(item["clips"], total_frames)
-    wash = scrim(item.get("theme", "violet")) if item.get("clips") else None
+    wash = scrim(item.get("theme", "violet")) if item.get("clips") and item.get("wash") else None
     zone = tuple(item.get("text_zone", (TOP, BOTTOM)))
     try:
         for i, card in enumerate(cards):
