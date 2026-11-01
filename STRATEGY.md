@@ -107,6 +107,10 @@ adding `"blender": {"script": "room.py"}` and a `"text_zone"` that keeps the wor
 About two minutes of rendering per second of video on this Mac, cached in `tools/.cache/`, so
 plan three or four 3D Reels a week as the leads and render them the night before the batch.
 
+**Pillars, from the week of 9 November:** viewing checks, real costs, selling (Prepare), the city
+quiz, and **Perché Nesso** (why Nesso and not a chatbot, 2–3 posts a week; CREATIVE.md §7, first two
+approved in `weeks/next-perche-nesso.py`).
+
 **What the API cannot do**, so a person does it in the app when it matters: music from Instagram's
 library, poll and link stickers on Stories, replying to comments (until the comments permission is
 added), and anything on TikTok (a TikTok account and its Content Posting API approval come first).
