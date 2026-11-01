@@ -319,3 +319,26 @@ if __name__ == "__main__":
     spec = runpy.run_path(sys.argv[1])
     story = spec["STORIES"][sys.argv[2]]
     print(render_story(story, sys.argv[3] if len(sys.argv) > 3 else f"/tmp/{sys.argv[2]}.mp4"))
+
+
+def sound_events(story):
+    """Where the phone sounds go: a pop for each message that arrives, keys while you type and a
+    soft send for each of yours, a whoosh on the headline, a chime on the mark."""
+    events, start = [], 0.0
+    for sc in story["scenes"]:
+        if sc["kind"] == "photo":
+            events.append((start + 0.25, "receive", 0.9, None, 0.0))
+        elif sc["kind"] == "chat":
+            for i, m in enumerate(sc["messages"]):
+                at = start + m["at"]
+                if m["from"] == "me":
+                    events.append((max(start, at - 0.95), "typing", 0.55, 0.85, 1.5 + 2.1 * i))
+                    events.append((at, "send", 0.8, None, 0.0))
+                elif m["at"] > 0:
+                    events.append((at, "receive", 0.9, None, 0.0))
+        elif sc["kind"] == "headline":
+            events.append((start + 0.05, "whoosh", 0.7, None, 0.0))
+        elif sc["kind"] == "end":
+            events.append((start + 0.15, "chime", 0.6, None, 0.0))
+        start += sc["secs"]
+    return events

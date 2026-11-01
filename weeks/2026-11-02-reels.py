@@ -59,8 +59,11 @@ def film(day, slug, shots, caption):
         cards.append(card)
     clips.append({"file": P + "40187579.mp4", "start": 0.5, "secs": 2.3})
     cards.append({"kind": "serif", "text": "*Nesso*", "size": 170, "sub": "Prima di firmare · link in bio", "secs": 2.3})
+    # soft piano under every warm film, the two tracks taking turns day by day
+    music = "music-beautiful-dream" if day % 2 == 0 else "music-classical-vibes"
     return {"id": f"r-{slug}", "type": "reel", "channel": "ig-it", "at": at(day, "13:00"), "slug": f"reel-{slug}",
-            "theme": "violet", "progress": False, "clips": clips, "cards": cards, "caption": caption}
+            "theme": "violet", "progress": False, "clips": clips, "cards": cards, "caption": caption,
+            "music": music, "music_gain": 0.6, "music_start": 3.0}
 
 
 def frame(clip, start=1.0):

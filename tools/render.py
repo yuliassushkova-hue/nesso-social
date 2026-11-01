@@ -569,9 +569,12 @@ def main(argv):
                 names.append(name)
             media, note = ", ".join(names), f"{len(names)} slides"
         elif kind == "reel" and "scenes" in item:
+            import audio
             import chat  # chat stories: tools/chat.py
             media = "reel.mp4"
-            note = f"{chat.render_story(item, folder / media):.1f}s chat"
+            secs = chat.render_story(item, folder / media)
+            audio.mux(folder / media, audio.mix(secs, item.get("music", "music-happy-home"), 0.22, item.get("music_start", 2.0), chat.sound_events(item)))
+            note = f"{secs:.1f}s chat, with sound"
         elif kind == "reel" and "video" in item:
             media = "reel.mp4"
             shutil.copyfile(Path(item["video"]).expanduser(), folder / media)
@@ -580,6 +583,10 @@ def main(argv):
             media = "reel.mp4"
             secs = render_reel(item, folder / media)
             note = f"{secs:.1f}s"
+            if item.get("music"):
+                import audio
+                audio.mux(folder / media, audio.mix(secs, item["music"], item.get("music_gain", 0.55), item.get("music_start", 0.0)))
+                note += ", with music"
         elif "screen" in item:
             media = "story.jpg"
             pad_screen(Path(item["screen"]).expanduser(), folder / media)
