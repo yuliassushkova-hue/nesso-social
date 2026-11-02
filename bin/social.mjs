@@ -586,8 +586,16 @@ async function whoami() {
   }
 }
 
+// gh refuses secret and variable commands in a checkout with more than one remote unless the
+// repository is named, so every gh call names it: Actions says which, and on a Mac it is origin's.
+function ghRepo() {
+  if (process.env.GITHUB_REPOSITORY) return process.env.GITHUB_REPOSITORY;
+  const origin = execFileSync('git', ['remote', 'get-url', 'origin'], { encoding: 'utf8' }).trim();
+  return origin.replace(/^.*github\.com[:/]/, '').replace(/\.git$/, '');
+}
+
 function setSecret(name, value) {
-  execFileSync('gh', ['secret', 'set', name], { input: value, stdio: ['pipe', 'inherit', 'inherit'] });
+  execFileSync('gh', ['secret', 'set', name, '--repo', ghRepo()], { input: value, stdio: ['pipe', 'inherit', 'inherit'] });
 }
 
 async function refreshTokens() {
@@ -685,7 +693,7 @@ async function linkedinLogin(name) {
   const who = await linkedinAuthor(name, token); // fails here, before anything is stored, on a token that does not work
   const lastDay = new Date(Date.now() + days * 86400_000).toISOString().slice(0, 10);
   setSecret(channel.token, token);
-  execFileSync('gh', ['variable', 'set', `${channel.token}_EXPIRES`, '--body', lastDay], { stdio: ['ignore', 'inherit', 'inherit'] });
+  execFileSync('gh', ['variable', 'set', `${channel.token}_EXPIRES`, '--body', lastDay, '--repo', ghRepo()], { stdio: ['ignore', 'inherit', 'inherit'] });
   console.log(`✓ ${name} posts as ${who.label}; ${channel.token} works until ${lastDay}`);
 }
 
@@ -704,7 +712,7 @@ function linkedinExpiry(now = Date.now()) {
     console.log(`${name.padEnd(10)}  works until ${lastDay}, ${left} days left`);
     if (left > LI_WARN_DAYS) continue;
     const title = left < 0 ? `LinkedIn: ${name} is signed out since ${lastDay}` : `LinkedIn: sign ${name} in again before ${lastDay}`;
-    const open = execFileSync('gh', ['issue', 'list', '--state', 'open', '--search', `"${title}" in:title`, '--json', 'title'], { encoding: 'utf8' });
+    const open = execFileSync('gh', ['issue', 'list', '--state', 'open', '--search', `"${title}" in:title`, '--json', 'title', '--repo', ghRepo()], { encoding: 'utf8' });
     if (JSON.parse(open).some((issue) => issue.title === title)) continue;
     const body = [
       left < 0
@@ -720,7 +728,7 @@ function linkedinExpiry(now = Date.now()) {
       'unset LINKEDIN_CLIENT_SECRET',
       '```',
     ].join('\n');
-    execFileSync('gh', ['issue', 'create', '--title', title, '--body', body], { stdio: ['ignore', 'inherit', 'inherit'] });
+    execFileSync('gh', ['issue', 'create', '--title', title, '--body', body, '--repo', ghRepo()], { stdio: ['ignore', 'inherit', 'inherit'] });
   }
 }
 
