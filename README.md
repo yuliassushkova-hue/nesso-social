@@ -1,6 +1,6 @@
 # nesso-social
 
-Nesso's posts for four channels: Instagram in Italian and Danish, and Threads in Italian and Danish.
+Nesso's posts for five channels: Instagram in Italian, Danish and English, and Threads in Italian and Danish.
 Posts are written in a content session (read `STRATEGY.md` first), approved by merging, and published on schedule by GitHub
 Actions. `SETUP.md` is how the accounts and secrets are connected (in Russian).
 

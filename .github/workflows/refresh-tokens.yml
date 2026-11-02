@@ -20,5 +20,6 @@ jobs:
           GH_TOKEN: ${{ secrets.SECRETS_PAT }}
           IG_IT_TOKEN: ${{ secrets.IG_IT_TOKEN }}
           IG_DK_TOKEN: ${{ secrets.IG_DK_TOKEN }}
+          IG_EN_TOKEN: ${{ secrets.IG_EN_TOKEN }}
           THREADS_IT_TOKEN: ${{ secrets.THREADS_IT_TOKEN }}
           THREADS_DK_TOKEN: ${{ secrets.THREADS_DK_TOKEN }}

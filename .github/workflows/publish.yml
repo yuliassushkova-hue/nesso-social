@@ -28,8 +28,10 @@ jobs:
         env:
           IG_IT_TOKEN: ${{ secrets.IG_IT_TOKEN }}
           IG_DK_TOKEN: ${{ secrets.IG_DK_TOKEN }}
+          IG_EN_TOKEN: ${{ secrets.IG_EN_TOKEN }}
           IG_IT_ACCOUNT_ID: ${{ secrets.IG_IT_ACCOUNT_ID }}
           IG_DK_ACCOUNT_ID: ${{ secrets.IG_DK_ACCOUNT_ID }}
+          IG_EN_ACCOUNT_ID: ${{ secrets.IG_EN_ACCOUNT_ID }}
           THREADS_IT_TOKEN: ${{ secrets.THREADS_IT_TOKEN }}
           THREADS_DK_TOKEN: ${{ secrets.THREADS_DK_TOKEN }}
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
