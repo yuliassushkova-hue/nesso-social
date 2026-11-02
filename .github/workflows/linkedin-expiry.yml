@@ -1,0 +1,26 @@
+name: linkedin-expiry
+
+# A LinkedIn sign-in lasts 60 days and LinkedIn gives this kind of app no way to extend it. Every
+# Monday this opens an issue for each LinkedIn channel with ten days or fewer left, once, saying how
+# to sign in again. linkedin-login records each channel's last day as a repository variable.
+on:
+  schedule:
+    - cron: '0 7 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+
+jobs:
+  expiry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node bin/social.mjs linkedin-expiry
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LI_JULIA_TOKEN_EXPIRES: ${{ vars.LI_JULIA_TOKEN_EXPIRES }}
+          LI_NESSO_TOKEN_EXPIRES: ${{ vars.LI_NESSO_TOKEN_EXPIRES }}

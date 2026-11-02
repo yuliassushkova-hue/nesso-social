@@ -85,6 +85,65 @@ Instagram и Threads скачивают картинку по публичной
 
 ## 5. Проверка
 
-1. Actions → **whoami** → Run workflow. Должны быть видны четыре имени аккаунтов.
+1. Actions → **whoami** → Run workflow. Должны быть видны имена всех подключённых аккаунтов.
 2. Первый настоящий пост поставить в Story или в Threads text, проверить, что вышел, и потом
    включать ленту.
+
+## 6. LinkedIn
+
+Публикация идёт через официальный API LinkedIn. Через сам сайт ничего не нажимается: соглашение
+LinkedIn запрещает автоматические действия на сайте, а API для этого и сделан.
+
+### Личный профиль (`li-julia`)
+
+1. **Страница компании.** Приложение LinkedIn обязательно привязывается к странице компании. Если у
+   Nesso её ещё нет: LinkedIn → For Business → **Create a Company Page**.
+2. linkedin.com/developers/apps → **Create app**. Название *Nesso Social*, страница Nesso, ссылка на
+   политику конфиденциальности `https://nesso.fit/legal/en/privacy`, логотип.
+3. Settings приложения → **Verify**: открыть ссылку под администратором страницы и подтвердить.
+4. Вкладка **Products**: подключить **Share on LinkedIn** и **Sign In with LinkedIn using OpenID
+   Connect**. Оба подключаются сразу, без проверки.
+5. Вкладка **Auth** → Authorized redirect URLs → добавить ровно `http://localhost:8765/linkedin`.
+6. Войти, на Mac, в папке `nesso-social`. Client ID и Client Secret на вкладке Auth:
+
+   ```bash
+   export LINKEDIN_CLIENT_ID=…
+   read -s LINKEDIN_CLIENT_SECRET; export LINKEDIN_CLIENT_SECRET
+   node bin/social.mjs linkedin-login li-julia
+   unset LINKEDIN_CLIENT_SECRET
+   ```
+
+   Откроется LinkedIn, нажать **Allow**. Команда сама положит ключ в секрет `LI_JULIA_TOKEN` и дату
+   окончания в переменную `LI_JULIA_TOKEN_EXPIRES`.
+
+   Если LinkedIn не принял адрес из шага 5: linkedin.com/developers/tools/oauth/token-generator →
+   выбрать приложение, отметить `openid`, `profile`, `w_member_social` → **Request access token** →
+   скопировать ключ, затем:
+
+   ```bash
+   read -s LI_TOKEN; export LI_TOKEN
+   node bin/social.mjs linkedin-login li-julia
+   unset LI_TOKEN
+   ```
+
+7. Actions → **whoami**: в строке `li-julia` должно стоять имя владельца профиля.
+
+**Каждые 60 дней вход нужно повторять** (шаг 6). Продлить его автоматически LinkedIn такому
+приложению не даёт. Workflow `linkedin-expiry` по понедельникам проверяет дату и за 10 дней до конца
+открывает issue с командами.
+
+### Страница Nesso (`li-nesso`)
+
+Постить от страницы можно только после проверки LinkedIn (Community Management API).
+
+1. **Отдельное приложение**, привязанное к той же странице: Community Management API должен быть
+   единственным продуктом в приложении.
+2. Products → **Community Management API** → заявка на **Development tier**. LinkedIn даёт этот API
+   только зарегистрированным компаниям.
+3. После одобрения заявка на **Standard tier**: политика конфиденциальности, запись экрана того, как
+   публикуется пост, соответствие правилам LinkedIn. **При отказе повторно подать с этого же
+   приложения нельзя**, только с нового, поэтому заявку готовим вместе.
+4. Номер страницы (в адресе админки `linkedin.com/company/<номер>/admin`) записать в `accounts.json`
+   как `"li-nesso": "<номер>"`. Это не секрет.
+5. Войти, как в шаге 6 выше, но с Client ID и Secret этого приложения:
+   `node bin/social.mjs linkedin-login li-nesso`. Входить нужно под администратором страницы.
