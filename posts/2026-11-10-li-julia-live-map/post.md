@@ -4,12 +4,18 @@ at: 2026-11-10T08:30+01:00
 type: image
 media: 01.jpg
 ---
-Every neighbourhood has a personality. Nesso puts it on a map.
+26,222 hexagons. 15 cities. One map of where life happens. 🗺️
 
-We split each city into hexagons of about 0.1 km² and measure every one from OpenStreetMap: up to 36 signals, from schools and parks to industrial land within 500 m. That is 26,222 hexagons so far, across 15 cities in Italy and Denmark.
+Nesso splits each city into hexagons of about 0.1 km² and measures every one from OpenStreetMap, up to 36 signals each. From those, districts get one of seven personalities:
 
-From those signals, districts get a personality: Aperitivo Quarter, Park Life, Tucked Away, School-Gate Quarter. A five-question quiz matches you to the one that fits your life.
+☕ Aperitivo Quarter
+🌳 Park Life
+🤫 Tucked Away
+🛒 Errands on the Doorstep
+🎒 School-Gate Quarter
+🚲 Well Connected
+🏃 Sport & Culture Hub
 
-nesso.fit/?via=linkedin
+Five questions match you to yours. Live in Italy and Denmark 👉 nesso.fit/?via=linkedin
 
 #proptech #opendata #realestate

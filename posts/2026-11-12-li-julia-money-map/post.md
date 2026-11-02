@@ -4,12 +4,21 @@ at: 2026-11-12T08:30+01:00
 type: image
 media: 01.jpg
 ---
-Where is the money? Nesso's investment map answers district by district.
+Where is the money? 📍
 
-Eight marks show where a neighbourhood stands this edition: rent rose most, prices rose faster than rents, homes sell most often, residents grew most, most homes rented, highest and lowest price per m², yield above the city median.
+Nesso's investment map marks each district on eight published figures:
 
-Each one is a placing on figures already published by the Agenzia delle Entrate (OMI), ISTAT and the city itself. No forecasts.
+🔥 Rent rose most
+💸 Prices rose faster than rents
+🔄 Homes sell most often
+📈 Residents grew most
+🔑 Most homes rented
+👑 Highest price per m²
+🏷️ Lowest price per m²
+💰 Yield above the city median
 
-Open for Torino, Milano and Genova: nesso.fit/?via=linkedin
+Every mark is a placing on figures from the Agenzia delle Entrate (OMI), ISTAT and the city itself. No forecasts.
+
+Open for Torino, Milano and Genova 👉 nesso.fit/?via=linkedin
 
 #proptech #realestateinvesting #italy
