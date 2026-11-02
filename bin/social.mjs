@@ -12,11 +12,14 @@
 //   node bin/social.mjs whoami                 which account each token reaches
 //   node bin/social.mjs refresh-tokens         refresh the tokens into GitHub secrets
 //   node bin/social.mjs exchange-threads NAME  short-lived Threads token -> long-lived secret NAME
+//   node bin/social.mjs linkedin-login CHANNEL sign a LinkedIn channel in, on this Mac (every 60 days)
+//   node bin/social.mjs linkedin-expiry        open an issue when a LinkedIn sign-in is about to lapse
 
 import { readFileSync, readdirSync, existsSync, writeFileSync, statSync } from 'node:fs';
 import { join, extname, basename, dirname, resolve, relative, sep } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
+import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -26,6 +29,11 @@ const LOG = resolve(process.env.PUBLISHED_LOG ?? join(ROOT, 'published.json'));
 const IG = 'https://graph.instagram.com/v23.0';
 const FB = 'https://graph.facebook.com/v23.0';
 const THREADS = 'https://graph.threads.net/v1.0';
+const LI = 'https://api.linkedin.com';
+const LI_OAUTH = 'https://www.linkedin.com/oauth/v2';
+// Every /rest call names the month of the API it was written against. LinkedIn keeps a version for
+// about a year, then refuses it: move this forward before then (Microsoft Learn, "Posts API").
+const LI_VERSION = '202610';
 
 // A post this many hours past its time is not published late: it is reported and skipped.
 const MAX_LATE_HOURS = 36;
@@ -38,6 +46,11 @@ export const CHANNELS = {
   'ig-en': { platform: 'instagram', token: 'IG_EN_TOKEN', account: 'IG_EN_ACCOUNT_ID' },
   'threads-it': { platform: 'threads', token: 'THREADS_IT_TOKEN' },
   'threads-dk': { platform: 'threads', token: 'THREADS_DK_TOKEN' },
+  // A person posts as themselves with the self-serve Share on LinkedIn product; the profile is
+  // found from the token. A Page needs the Community Management API, which LinkedIn approves for an
+  // app of its own, and the Page's organization id in accounts.json.
+  'li-julia': { platform: 'linkedin', token: 'LI_JULIA_TOKEN', scope: 'openid profile w_member_social' },
+  'li-nesso': { platform: 'linkedin', token: 'LI_NESSO_TOKEN', account: 'LI_NESSO_ORG_ID', scope: 'w_organization_social' },
 };
 
 // What each platform accepts, from its own content-publishing docs.
@@ -54,6 +67,13 @@ const RULES = {
     images: ['.jpg', '.jpeg', '.png'],
     videos: ['.mp4', '.mov'],
     captionMax: 500,
+    hashtagMax: Infinity,
+  },
+  linkedin: {
+    types: { text: [0, 0], image: [1, 1], 'multi-image': [2, 20] },
+    images: ['.jpg', '.jpeg', '.png'],
+    videos: [],
+    captionMax: 3000, // counted after escaping, which is what LinkedIn stores
     hashtagMax: Infinity,
   },
 };
@@ -112,7 +132,8 @@ export function validate(post) {
   }
   if (post.type === 'story' && post.caption) errors.push('a story carries no caption: leave the body empty');
   if (post.type === 'text' && !post.caption) errors.push('a text post needs text');
-  if (post.caption.length > rules.captionMax) errors.push(`caption is ${post.caption.length} characters, ${channel.platform} takes ${rules.captionMax}`);
+  const sent = channel.platform === 'linkedin' ? littleText(post.caption) : post.caption;
+  if (sent.length > rules.captionMax) errors.push(`caption is ${sent.length} characters, ${channel.platform} takes ${rules.captionMax}`);
   const tags = post.caption.match(/(^|\s)#[\p{L}\p{N}_]+/gu) ?? [];
   if (tags.length > rules.hashtagMax) errors.push(`${tags.length} hashtags, ${channel.platform} takes ${rules.hashtagMax}`);
   return errors;
@@ -240,8 +261,12 @@ async function igAccount(token, accountId) {
   throw new Error(`could not find the Instagram account for this token (${tried.join('; ')}); set its account id`);
 }
 
-async function whoIs(platform, token, accountId) {
+async function whoIs(platform, token, accountId, name) {
   if (platform === 'instagram') return igAccount(token, accountId);
+  if (platform === 'linkedin') {
+    const author = await linkedinAuthor(name, token);
+    return { id: author.urn, username: author.label };
+  }
   const me = await api('GET', `${THREADS}/me`, { fields: 'id,username', access_token: token });
   return { id: me.id, username: me.username };
 }
@@ -305,6 +330,91 @@ async function publishThreads(post, token, urls) {
   const published = await api('POST', `${THREADS}/${me.id}/threads_publish`, { creation_id: container.id, access_token: token });
   const info = await api('GET', `${THREADS}/${published.id}`, { fields: 'permalink', access_token: token }).catch(() => ({}));
   return { mediaId: published.id, permalink: info.permalink ?? null, account: me.username };
+}
+
+// LinkedIn reads a post's text as "little" markup, where | { } @ [ ] ( ) < > # \ * _ ~ mean
+// something, and a bare one can cut the post off where it stands. Every one is escaped except a #
+// that starts a hashtag, so #housing still becomes a hashtag.
+export function littleText(text) {
+  return text.replace(/[\\|{}@[\]()<>#*_~]/g, (ch, i, s) =>
+    ch === '#' && (i === 0 || /\s/.test(s[i - 1])) && /[\p{L}\p{N}_]/u.test(s[i + 1] ?? '') ? ch : `\\${ch}`,
+  );
+}
+
+async function liApi(method, path, token, body) {
+  const headers = { Authorization: `Bearer ${token}` };
+  if (path.startsWith('/rest/')) Object.assign(headers, { 'LinkedIn-Version': LI_VERSION, 'X-Restli-Protocol-Version': '2.0.0' });
+  if (body) headers['Content-Type'] = 'application/json';
+  const res = await fetch(`${LI}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const hint = res.status === 401 ? ' (the sign-in has lapsed or was revoked: run linkedin-login again)' : '';
+    const error = new Error(`${method} api.linkedin.com${path.split('?')[0]}: ${json.message ?? `HTTP ${res.status}`}${hint}`);
+    error.status = res.status;
+    throw error;
+  }
+  return { json, id: res.headers.get('x-restli-id') };
+}
+
+// Who a LinkedIn channel posts as. A Page is named by its id; a person is whoever the token
+// belongs to, so the token cannot post to a profile it was not issued for.
+async function linkedinAuthor(name, token) {
+  if (CHANNELS[name].account) {
+    const org = accountIdFor(name);
+    if (!org) throw new Error(`${name} needs its organization id in accounts.json`);
+    return { urn: `urn:li:organization:${org}`, label: `page ${org}` };
+  }
+  const { json: me } = await liApi('GET', '/v2/userinfo', token);
+  return { urn: `urn:li:person:${me.sub}`, label: me.name ?? me.sub };
+}
+
+// LinkedIn takes the file itself rather than a link to it, so nothing here needs a public URL.
+async function uploadLinkedInImage(post, name, owner, token) {
+  const { json } = await liApi('POST', '/rest/images?action=initializeUpload', token, { initializeUploadRequest: { owner } });
+  const { uploadUrl, image } = json.value ?? {};
+  if (!uploadUrl || !image) throw new Error(`LinkedIn gave no upload address for ${name}`);
+  const res = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/octet-stream' },
+    body: readFileSync(join(post.dir, name)),
+  });
+  if (!res.ok) throw new Error(`uploading ${name} to LinkedIn: HTTP ${res.status}`);
+  return image;
+}
+
+// LinkedIn has no unpublished container, so a rehearsal stops after this: the token works and
+// every image was accepted. An uploaded image no post uses is never shown.
+async function prepareLinkedIn(post, token) {
+  const author = await linkedinAuthor(post.channel, token);
+  const images = [];
+  for (const name of post.media) images.push(await uploadLinkedInImage(post, name, author.urn, token));
+  return { author, images };
+}
+
+async function publishLinkedIn(post, token) {
+  const { author, images } = await prepareLinkedIn(post, token);
+  const body = {
+    author: author.urn,
+    commentary: littleText(post.caption),
+    visibility: 'PUBLIC',
+    distribution: { feedDistribution: 'MAIN_FEED', targetEntities: [], thirdPartyDistributionChannels: [] },
+    lifecycleState: 'PUBLISHED',
+    isReshareDisabledByAuthor: false,
+  };
+  if (images.length === 1) body.content = { media: { id: images[0] } };
+  if (images.length > 1) body.content = { multiImage: { images: images.map((id) => ({ id })) } };
+  // An image uploaded a moment ago can still be processing. A post refused with 400 or 422 was not
+  // created, so asking again is safe; nothing else is retried here, so a post never goes out twice.
+  let created;
+  for (let attempt = 1; !created; attempt++) {
+    try {
+      created = await liApi('POST', '/rest/posts', token, body);
+    } catch (error) {
+      if (!images.length || attempt === 3 || ![400, 422].includes(error.status)) throw error;
+      await sleep(15_000);
+    }
+  }
+  return { mediaId: created.id, permalink: created.id ? `https://www.linkedin.com/feed/update/${created.id}/` : null, account: author.label };
 }
 
 // Both APIs fetch media from a public URL. The repository is public, so in Actions a file is
@@ -397,11 +507,13 @@ async function publish({ dryRun }) {
       const token = process.env[channel.token];
       if (!token) throw new Error(`secret ${channel.token} is not set`);
       const urls = [];
-      for (const name of post.media) urls.push(await mediaUrl(post, name));
+      if (channel.platform !== 'linkedin') for (const name of post.media) urls.push(await mediaUrl(post, name));
       const result =
         channel.platform === 'instagram'
           ? await publishInstagram(post, token, urls, accountIdFor(post.channel))
-          : await publishThreads(post, token, urls);
+          : channel.platform === 'linkedin'
+            ? await publishLinkedIn(post, token)
+            : await publishThreads(post, token, urls);
       log[post.id] = { channel: post.channel, at: post.at, publishedAt: new Date().toISOString(), ...result };
       writeLog(log); // after each post, so a later failure cannot cause a repeat
       console.log(`✓ ${post.id} → @${result.account} ${result.permalink ?? result.mediaId}`);
@@ -434,6 +546,7 @@ async function rehearse() {
     const channel = CHANNELS[post.channel];
     const token = process.env[channel.token];
     if (!token) throw new Error(`secret ${channel.token} is not set`);
+    if (channel.platform === 'linkedin') return prepareLinkedIn(post, token);
     const urls = [];
     for (const name of post.media) urls.push(await mediaUrl(post, name));
     if (channel.platform === 'instagram') await prepareInstagram(post, token, urls, accountIdFor(post.channel));
@@ -464,7 +577,7 @@ async function whoami() {
       continue;
     }
     try {
-      const me = await whoIs(channel.platform, token, accountIdFor(name));
+      const me = await whoIs(channel.platform, token, accountIdFor(name), name);
       console.log(`${name.padEnd(10)}  @${me.username}  (account id ${me.id})`);
     } catch (error) {
       process.exitCode = 1;
@@ -481,6 +594,10 @@ async function refreshTokens() {
   for (const channel of Object.values(CHANNELS)) {
     const token = process.env[channel.token];
     if (!token) continue;
+    if (channel.platform === 'linkedin') {
+      console.log(`- ${channel.token}: LinkedIn gives this kind of app no refresh; run linkedin-login before it lapses`);
+      continue;
+    }
     // A Facebook-format token from a system user does not expire and has no refresh call.
     if (channel.platform === 'instagram' && !token.startsWith('IG')) {
       console.log(`- ${channel.token} is a Facebook-format token: nothing to refresh`);
@@ -510,6 +627,103 @@ async function exchangeThreads(name) {
   console.log(`✓ ${name} set for @${me.username}, good for ${Math.round(long.expires_in / 86400)} days`);
 }
 
+// LinkedIn gives a self-serve app no refresh token: a sign-in lasts 60 days and is then made again.
+// Run on this Mac. It opens LinkedIn's consent page, catches the answer on localhost (that address
+// must be listed under the app's Auth tab exactly), and stores the token as the channel's secret and
+// its last day as a repository variable, which linkedin-expiry watches. A token copied from the
+// Developer Portal's Token Generator can be handed in as LI_TOKEN instead, and no browser opens.
+const LI_REDIRECT = 'http://localhost:8765/linkedin';
+
+function linkedinCode(clientId, scope) {
+  const state = randomBytes(16).toString('hex');
+  const url = new URL(`${LI_OAUTH}/authorization`);
+  // Spaces between scopes as %20, the way LinkedIn's own examples write them, not as +.
+  url.search = new URLSearchParams({ response_type: 'code', client_id: clientId, redirect_uri: LI_REDIRECT, state, scope }).toString().replace(/\+/g, '%20');
+  const callback = new URL(LI_REDIRECT);
+  return new Promise((done, fail) => {
+    const server = createServer((req, res) => {
+      const got = new URL(req.url, LI_REDIRECT);
+      if (got.pathname !== callback.pathname) return res.writeHead(404).end();
+      const code = got.searchParams.get('state') === state ? got.searchParams.get('code') : null;
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' }).end(code ? 'Done. You can close this tab.' : 'Not signed in. See the terminal.');
+      server.close();
+      if (code) done(code);
+      else fail(new Error(`LinkedIn answered without a code: ${got.searchParams.get('error_description') ?? got.searchParams.get('error') ?? 'the state did not match'}`));
+    });
+    server.on('error', fail);
+    // No host, so both IPv4 and IPv6 answer: a browser may ask for localhost over either. The
+    // server takes one request and closes.
+    server.listen(Number(callback.port), () => {
+      console.log(`Opening LinkedIn. If no browser opens, go to:\n${url}`);
+      try {
+        execFileSync('open', [url.toString()]);
+      } catch {}
+    });
+  });
+}
+
+async function linkedinLogin(name) {
+  const channel = CHANNELS[name];
+  const names = Object.keys(CHANNELS).filter((n) => CHANNELS[n].platform === 'linkedin');
+  if (channel?.platform !== 'linkedin') throw new Error(`name a LinkedIn channel: ${names.join(', ')}`);
+  let token = process.env.LI_TOKEN;
+  let days = 60; // what LinkedIn issues today; the exchange below says so for itself
+  if (!token) {
+    const { LINKEDIN_CLIENT_ID: clientId, LINKEDIN_CLIENT_SECRET: secret } = process.env;
+    if (!clientId || !secret) throw new Error('set LINKEDIN_CLIENT_ID and LINKEDIN_CLIENT_SECRET first (read -s, never on the command line), or LI_TOKEN from the Token Generator');
+    const code = await linkedinCode(clientId, channel.scope);
+    const res = await fetch(`${LI_OAUTH}/accessToken`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ grant_type: 'authorization_code', code, redirect_uri: LI_REDIRECT, client_id: clientId, client_secret: secret }),
+    });
+    const answer = await res.json().catch(() => ({}));
+    if (!res.ok || !answer.access_token) throw new Error(`LinkedIn refused the code: ${answer.error_description ?? `HTTP ${res.status}`}`);
+    token = answer.access_token;
+    days = answer.expires_in / 86400;
+  }
+  const who = await linkedinAuthor(name, token); // fails here, before anything is stored, on a token that does not work
+  const lastDay = new Date(Date.now() + days * 86400_000).toISOString().slice(0, 10);
+  setSecret(channel.token, token);
+  execFileSync('gh', ['variable', 'set', `${channel.token}_EXPIRES`, '--body', lastDay], { stdio: ['ignore', 'inherit', 'inherit'] });
+  console.log(`✓ ${name} posts as ${who.label}; ${channel.token} works until ${lastDay}`);
+}
+
+// Run weekly by Actions: an issue for each LinkedIn sign-in with ten days or fewer left, opened once.
+const LI_WARN_DAYS = 10;
+
+function linkedinExpiry(now = Date.now()) {
+  for (const [name, channel] of Object.entries(CHANNELS)) {
+    if (channel.platform !== 'linkedin') continue;
+    const lastDay = process.env[`${channel.token}_EXPIRES`];
+    if (!lastDay) {
+      console.log(`${name.padEnd(10)}  not signed in`);
+      continue;
+    }
+    const left = Math.floor((Date.parse(`${lastDay}T00:00:00Z`) - now) / 86400_000);
+    console.log(`${name.padEnd(10)}  works until ${lastDay}, ${left} days left`);
+    if (left > LI_WARN_DAYS) continue;
+    const title = left < 0 ? `LinkedIn: ${name} is signed out since ${lastDay}` : `LinkedIn: sign ${name} in again before ${lastDay}`;
+    const open = execFileSync('gh', ['issue', 'list', '--state', 'open', '--search', `"${title}" in:title`, '--json', 'title'], { encoding: 'utf8' });
+    if (JSON.parse(open).some((issue) => issue.title === title)) continue;
+    const body = [
+      left < 0
+        ? `Вход в LinkedIn для \`${name}\` закончился ${lastDay}: посты в этот канал сейчас не выходят.`
+        : `Вход в LinkedIn для \`${name}\` действует до ${lastDay}. После этого посты в этот канал не выходят.`,
+      '',
+      'Войти заново на Mac, в папке `nesso-social` (подробно в `SETUP.md` §6):',
+      '',
+      '```bash',
+      'export LINKEDIN_CLIENT_ID=…   # вкладка Auth приложения',
+      'read -s LINKEDIN_CLIENT_SECRET; export LINKEDIN_CLIENT_SECRET',
+      `node bin/social.mjs linkedin-login ${name}`,
+      'unset LINKEDIN_CLIENT_SECRET',
+      '```',
+    ].join('\n');
+    execFileSync('gh', ['issue', 'create', '--title', title, '--body', body], { stdio: ['ignore', 'inherit', 'inherit'] });
+  }
+}
+
 const [command, arg] = process.argv.slice(2);
 const commands = {
   check,
@@ -519,6 +733,8 @@ const commands = {
   rehearse,
   'refresh-tokens': refreshTokens,
   'exchange-threads': () => exchangeThreads(arg),
+  'linkedin-login': () => linkedinLogin(arg),
+  'linkedin-expiry': () => linkedinExpiry(),
 };
 if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('social.mjs')) {
   if (!commands[command]) {

@@ -1,6 +1,7 @@
 # nesso-social
 
-Nesso's posts for five channels: Instagram in Italian, Danish and English, and Threads in Italian and Danish.
+Nesso's posts for Instagram in Italian, Danish and English, Threads in Italian and Danish, and LinkedIn:
+the founder's own profile (`li-julia`) and, once LinkedIn approves it, Nesso's Page (`li-nesso`).
 Posts are written in a content session (read `STRATEGY.md` first), approved by merging, and published on schedule by GitHub
 Actions. `SETUP.md` is how the accounts and secrets are connected (in Russian).
 
@@ -31,25 +32,30 @@ posts/2026-11-04-ig-it-costi/
 
 ```markdown
 ---
-channel: ig-it                   # ig-it | ig-dk | threads-it | threads-dk
+channel: ig-it                   # ig-it | ig-dk | ig-en | threads-it | threads-dk | li-julia | li-nesso
 at: 2026-11-04T18:00+01:00       # always with the offset: +01:00 Rome and Copenhagen in winter, +02:00 in summer
-type: carousel                   # Instagram: image | carousel | reel | story   Threads: text | image | video | carousel
-media: 01.jpg, 02.jpg            # in order; empty for a Threads text post
+type: carousel                   # Instagram: image | carousel | reel | story   Threads: text | image | video | carousel   LinkedIn: text | image | multi-image
+media: 01.jpg, 02.jpg            # in order; empty for a text post
 ---
 The caption, exactly as it will appear. Line breaks are kept.
 
 #casa #affitto
 ```
 
-| | Instagram | Threads |
-|---|---|---|
-| images | JPEG only | JPEG or PNG |
-| video | MP4 or MOV | MP4 or MOV |
-| caption | 2200 characters, 30 hashtags | 500 characters |
-| carousel | 2 to 10 | 2 to 20 |
+| | Instagram | Threads | LinkedIn |
+|---|---|---|---|
+| images | JPEG only | JPEG or PNG | JPEG or PNG |
+| video | MP4 or MOV | MP4 or MOV | not yet |
+| caption | 2200 characters, 30 hashtags | 500 characters | 3000 characters |
+| carousel | 2 to 10 | 2 to 20 | `multi-image`, 2 to 20 |
 
 Convert a PNG for Instagram with `sips -s format jpeg -s formatOptions 90 in.png --out 01.jpg`. Feed
 images are best at 1080×1350 (4:5); stories and reels at 1080×1920.
+
+**LinkedIn** takes the text as written: brackets, `*`, `_`, `@` and the rest are escaped on the way
+out, so nothing in the text turns into markup. A `#word` stays a hashtag. LinkedIn has no
+unpublished draft, so `rehearse` checks the sign-in and uploads the images, and nothing is posted.
+`li-julia` posts follow the `julia-linkedin-voice` skill, in English.
 
 Name folders `YYYY-MM-DD-channel-subject`, so the folder list reads as the calendar.
 
