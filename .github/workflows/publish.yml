@@ -28,6 +28,8 @@ jobs:
     timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # a rebase needs the history; a shallow clone cannot rebase at all
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -54,13 +56,13 @@ jobs:
           while :; do
             # A post merged while this run is on watch is picked up here, and its files are
             # served from the commit that holds them, not from the one this run started on.
-            git pull --rebase --quiet origin main || echo "pull failed, using what is here"
+            git pull --rebase --quiet origin main || { git rebase --abort 2>/dev/null; echo "pull failed, using what is here"; }
             export MEDIA_SHA=$(git rev-parse HEAD)
             node bin/social.mjs publish || echo "a post failed; it is tried again next round"
             git add published.json
             if ! git diff --cached --quiet; then
               git commit --quiet -m "chore: record published posts"
-              git push --quiet || (git pull --rebase --quiet origin main && git push --quiet) || echo "push failed; recorded next round"
+              git push --quiet || { git pull --rebase --quiet origin main && git push --quiet; } || { git rebase --abort 2>/dev/null; echo "push failed; recorded next round"; }
             fi
             [ $(date +%s) -ge $end ] && break
             sleep 180
@@ -68,5 +70,5 @@ jobs:
           # A record that never reached GitHub would let the next run publish the same post again.
           for i in 1 2 3; do
             git push --quiet && break
-            sleep 20; git pull --rebase --quiet origin main
+            sleep 20; git pull --rebase --quiet origin main || git rebase --abort 2>/dev/null
           done
