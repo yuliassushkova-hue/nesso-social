@@ -16,7 +16,7 @@ M = "~/Documents/GitHub/nesso_mobile/docs/marketing/mockups-en/"
 
 
 def at(day):
-    return f"2026-11-{day:02d}T18:00+01:00"
+    return f"2026-11-{day - 7:02d}T18:00+01:00"  # moved to 2-8 Nov (founder, 2026-11-02)
 
 
 def end(x, first, second):

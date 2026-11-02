@@ -13,7 +13,7 @@ TIPS = [
 ]
 
 ITEMS = [
-    {"id": f"en-s-tip-{day}", "type": "story", "channel": "ig-en", "at": f"2026-11-{day:02d}T12:30+01:00",
+    {"id": f"en-s-tip-{day}", "type": "story", "channel": "ig-en", "at": f"2026-11-{day - 7:02d}T12:30+01:00",
      "slug": f"story-tip-{day}", "theme": theme,
      "card": {"kind": "fact", "label": label, "text": text, "sub": sub}}
     for day, theme, label, text, sub in TIPS
