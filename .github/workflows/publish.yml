@@ -1,11 +1,19 @@
 name: publish
 
-# Every ten minutes: GitHub runs schedules late or skips them when busy, and Actions minutes
-# are free on a public repository. A private one would need this slowed down (2000 minutes a month).
+# GitHub starts scheduled runs late and drops most of them: on 1 and 2 November the ten-minute
+# schedule below fired about once every four hours. So a run does not publish once and stop: it
+# stays on watch for almost six hours (the limit for a job), checking every three minutes, and
+# the next scheduled run waits in the queue behind it. One trigger in six hours is enough to keep
+# posts on time. Actions minutes are free on a public repository; a private one could not afford
+# this (2000 minutes a month).
 on:
   schedule:
     - cron: '*/10 * * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: How long to stay on watch (minutes)
+        default: '340'
 
 concurrency:
   group: publish
@@ -17,14 +25,15 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # a rebase needs the history; a shallow clone cannot rebase at all
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Publish what is due
-        run: node bin/social.mjs publish
+      - name: Publish what is due, every three minutes for 5 h 40 min
         env:
           IG_IT_TOKEN: ${{ secrets.IG_IT_TOKEN }}
           IG_DK_TOKEN: ${{ secrets.IG_DK_TOKEN }}
@@ -39,15 +48,28 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           MEDIA_BASE_URL: ${{ secrets.MEDIA_BASE_URL }}
-      # Runs even when one post failed, so the ones that went out are recorded
-      # and are not published again next hour.
-      - name: Record what went out
-        if: always()
+          WATCH_MINUTES: ${{ inputs.minutes || '340' }}
         run: |
           git config user.name "nesso-social"
           git config user.email "nesso-social@users.noreply.github.com"
-          git add published.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: record published posts"
-            git push || (git pull --rebase && git push)
-          fi
+          end=$(( $(date +%s) + WATCH_MINUTES * 60 ))
+          while :; do
+            # A post merged while this run is on watch is picked up here, and its files are
+            # served from the commit that holds them, not from the one this run started on.
+            git pull --rebase --quiet origin main || { git rebase --abort 2>/dev/null; echo "pull failed, using what is here"; }
+            export MEDIA_SHA=$(git rev-parse HEAD)
+            echo "check at $(TZ=Europe/Rome date +%H:%M) Rome, files from ${MEDIA_SHA:0:7}"
+            node bin/social.mjs publish || echo "a post failed; it is tried again next round"
+            git add published.json
+            if ! git diff --cached --quiet; then
+              git commit --quiet -m "chore: record published posts"
+              git push --quiet || { git pull --rebase --quiet origin main && git push --quiet; } || { git rebase --abort 2>/dev/null; echo "push failed; recorded next round"; }
+            fi
+            [ $(date +%s) -ge $end ] && break
+            sleep 180
+          done
+          # A record that never reached GitHub would let the next run publish the same post again.
+          for i in 1 2 3; do
+            git push --quiet && break
+            sleep 20; git pull --rebase --quiet origin main || git rebase --abort 2>/dev/null
+          done
