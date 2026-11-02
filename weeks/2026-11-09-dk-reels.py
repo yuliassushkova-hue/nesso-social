@@ -31,7 +31,7 @@ ORANGE_AV, VIOLET_AV, INK_AV = (249, 115, 22), (90, 62, 192), (52, 33, 111)
 
 
 def at(day, time):
-    return f"2026-11-{day:02d}T{time}+01:00"
+    return f"2026-11-{day - 6:02d}T{time}+01:00"  # moved to 3-9 Nov (founder, 2026-11-02)
 
 
 def chat(day, time, slug, hook_clip, who, role, color, hook, thread, headline, sub, phone, caption):
