@@ -4,14 +4,17 @@ at: 2026-11-17T08:30+01:00
 type: multi-image
 media: post-1a-photo.jpg, post-1b-sell-together.jpg
 ---
-Portals sell estate agents an ad. Nesso is built to help them sell the home. 🏡
+An estate agent is paid when the sale closes. Portals sell them an ad. 🏡
 
-What founding agencies in Italy can test today:
-📍 Every listing in the cities Nesso covers, read for buyers: walk times, the district, published OMI prices and rents
-🔎 Buyers check the home on site, across 82 checks
-📱 Noise and floor slope measured by the phone, not guessed
+Nesso for agencies is built around the close.
 
-From 2027: the listing file prepared for the agency, buyers matched with a checked record, and several agencies closing one sale with each share agreed up front.
+Today, for founding agencies in Italy:
+📍 Every listing comes with its neighbourhood read: walk times, who the district suits, published OMI prices and rents
+🛠️ Sellers get a list of what to fix before viewings, sorted by what research has found in sale prices
+
+From 2027:
+🤝 Several agencies close one sale together. One holds the mandate, one runs the viewings, one brings the buyer, and each share is agreed up front and split at closing
+📂 The listing file, the advert and the follow-ups prepared for the agency
 
 Founding places for independent agencies 👉 nesso.fit/agents?via=linkedin
 
