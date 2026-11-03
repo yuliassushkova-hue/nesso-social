@@ -4,21 +4,15 @@ at: 2026-11-19T08:30+01:00
 type: multi-image
 media: post-3a-photo.jpg, post-3b-short-let-rules.jpg
 ---
-We read the short-let rules of 10 Italian cities. The acts, not the articles about them. 📜
+Short-let rules show up in prices. 📉
 
-⛔ City limits in force: Firenze, Roma, Bologna
-✅ No city limit found: Torino, Milano, Genova, Palermo, Catania
-❔ Not settled: Venezia, Napoli
+When cities around Los Angeles limited home-sharing, Airbnb listings fell by about half and house prices by about 2% (Koster, van Ommeren and Volkhausen). In Barcelona, Airbnb growth raised rents by 1.9% and sale prices by 4.6% on average, and by 7% and 17% in the busiest neighbourhoods (García-López and co-authors, Journal of Urban Economics, 2020).
 
-The same word hides three very different rules:
-· Firenze: a five-year authorisation per unit, a 28 m² minimum, and no new short lets in three parts of the historic centre since June 2026
-· Roma: the limit reaches only flats created by converting or splitting units inside the UNESCO centre
-· Bologna: a 50 m² minimum in the historic city
+In Italy, three big cities now close specific strategies:
+· Firenze: a flat under 28 m² can't be a short let at all. It can only be let for more than 30 days
+· Roma: in the UNESCO centre, a flat split in two, or a shop turned into a flat, can no longer take tourists
+· Bologna: in the historic city, a new short let under 50 m² needs two bedrooms
 
-Venezia's 120-day cap, widely reported as law since 2024, was still a council proposal when we checked in September.
+So Nesso reads the rule before it scores a short-let investment. Where a rule restricts it or is not verified, there is no short-let score, and the district is judged on long-let yield and resale.
 
-For scale: at the start of 2025 Italy's national register listed 571,411 places to stay, short lets included, and 79% had their CIN code.
-
-Where a rule is not verified, Nesso gives no short-let score.
-
-#proptech #shorttermrentals #italy
+#proptech #realestateinvesting #italy
