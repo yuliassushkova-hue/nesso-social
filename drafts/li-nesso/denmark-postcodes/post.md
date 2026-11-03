@@ -4,13 +4,13 @@ at: 2026-11-17T08:30+01:00
 type: multi-image
 media: post-1a-photo.jpg, post-1b-denmark-postcodes.jpg
 ---
-Denmark publishes home prices per postcode. The map of those postcodes? We had to build it. 🇩🇰
+Italy publishes home price ranges by OMI zone, twice a year. Denmark publishes prices by postcode, every quarter. 🇮🇹🇩🇰
 
-Finans Danmark publishes kr per m² for every postcode each quarter, for flats and for houses. But the official Danish address service now answers "410 Gone", and OpenStreetMap had outlines for only ten postcodes.
+Nesso shows each country's official figures at the unit they are published at, and never finer.
 
-Every Danish address in OpenStreetMap carries its postcode, though. So each hexagon takes the postcode most of its addresses carry, and a postcode becomes the hexagons that share it.
+In Denmark that means realised sale prices per m² from Finans Danmark, for flats and for houses, across 89 postcodes in Copenhagen, Aarhus, Odense, Aalborg and Esbjerg. Nesso also shows how far the sale price sat below the first asking price, and marks that one as worked out from Finans Danmark's figures.
 
-89 postcodes across Copenhagen, Aarhus, Odense, Aalborg and Esbjerg. Source: Finans Danmark.
+Source: Finans Danmark, Boligmarkedsstatistikken (BM011).
 
 👉 nesso.fit/?via=linkedin
 
