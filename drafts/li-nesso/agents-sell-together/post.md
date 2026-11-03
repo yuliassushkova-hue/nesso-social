@@ -4,17 +4,15 @@ at: 2026-11-17T08:30+01:00
 type: multi-image
 media: post-1a-photo.jpg, post-1b-sell-together.jpg
 ---
-An estate agent is paid when the sale closes. Portals sell them an ad. 🏡
+Picture a house in a Piedmont village, on the market for five years. Nothing is wrong with it. It is being shown to the wrong people. 🏡
 
-Nesso for agencies is built around the close.
+The agency selling it works with families who want a school nearby and a fast train. The house suits someone else: a freelancer with no small children, who wants quiet and space.
 
-Today, for founding agencies in Italy:
-📍 Every listing comes with its neighbourhood read: walk times, who the district suits, published OMI prices and rents
-🛠️ Sellers get a list of what to fix before viewings, sorted by what research has found in sale prices
+That buyer is usually looking somewhere else, with another agency. In Turin. Or in France, looking for a country house in Italy.
 
-From 2027:
-🤝 Several agencies close one sale together. One holds the mandate, one runs the viewings, one brings the buyer, and each share is agreed up front and split at closing
-📂 The listing file, the advert and the follow-ups prepared for the agency
+Nesso is building the network that connects them:
+🤝 From 2027: the village agency keeps the mandate, the agency with the right buyer brings them, and each share is agreed up front and split at closing
+📍 Today, in the cities Nesso covers: a listing told for the buyer it suits, with who the district suits, walk times and published prices, not only square metres
 
 Founding places for independent agencies 👉 nesso.fit/agents?via=linkedin
 
