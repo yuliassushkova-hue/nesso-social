@@ -982,5 +982,29 @@
     "mediaId": "18017925338968363",
     "permalink": "https://www.instagram.com/p/DfcrApfIE3Y/",
     "account": "nesso_danmark"
+  },
+  "2026-11-07-ig-dk-reel-fortrydelse": {
+    "channel": "ig-dk",
+    "at": "2026-11-07T20:00+01:00",
+    "publishedAt": "2026-11-07T19:01:09.985Z",
+    "mediaId": "17987829456093687",
+    "permalink": "https://www.instagram.com/reel/Dfc4gy5AtM-/",
+    "account": "nesso_danmark"
+  },
+  "2026-11-07-ig-en-reel-sun": {
+    "channel": "ig-en",
+    "at": "2026-11-07T20:00+01:00",
+    "publishedAt": "2026-11-07T19:01:42.515Z",
+    "mediaId": "18143487226720505",
+    "permalink": "https://www.instagram.com/reel/Dfc4mwDGZ-H/",
+    "account": "nesso_global"
+  },
+  "2026-11-07-ig-it-reel-sole": {
+    "channel": "ig-it",
+    "at": "2026-11-07T20:00+01:00",
+    "publishedAt": "2026-11-07T19:02:15.921Z",
+    "mediaId": "18120892289107394",
+    "permalink": "https://www.instagram.com/reel/Dfc4qr9Ae_4/",
+    "account": "nesso_italia"
   }
 }
