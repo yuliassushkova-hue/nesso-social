@@ -854,5 +854,29 @@
     "mediaId": "17921057868529925",
     "permalink": "https://www.instagram.com/stories/nesso_italia/4024661773222267413",
     "account": "nesso_italia"
+  },
+  "2026-11-07-ig-dk-reel-advokat": {
+    "channel": "ig-dk",
+    "at": "2026-11-07T08:00+01:00",
+    "publishedAt": "2026-11-07T07:01:07.681Z",
+    "mediaId": "18037241480664676",
+    "permalink": "https://www.instagram.com/reel/DfbmHclj5MZ/",
+    "account": "nesso_danmark"
+  },
+  "2026-11-07-ig-en-reel-shower": {
+    "channel": "ig-en",
+    "at": "2026-11-07T08:00+01:00",
+    "publishedAt": "2026-11-07T07:01:39.435Z",
+    "mediaId": "18097018337154684",
+    "permalink": "https://www.instagram.com/reel/DfbmMrZn_6h/",
+    "account": "nesso_global"
+  },
+  "2026-11-07-ig-it-reel-doccia": {
+    "channel": "ig-it",
+    "at": "2026-11-07T08:00+01:00",
+    "publishedAt": "2026-11-07T07:02:25.093Z",
+    "mediaId": "18341927749275183",
+    "permalink": "https://www.instagram.com/reel/DfbmRRHDfDo/",
+    "account": "nesso_italia"
   }
 }
