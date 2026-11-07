@@ -23,4 +23,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           LI_JULIA_TOKEN_EXPIRES: ${{ vars.LI_JULIA_TOKEN_EXPIRES }}
+          LI_NIKITA_TOKEN_EXPIRES: ${{ vars.LI_NIKITA_TOKEN_EXPIRES }}
           LI_NESSO_TOKEN_EXPIRES: ${{ vars.LI_NESSO_TOKEN_EXPIRES }}
