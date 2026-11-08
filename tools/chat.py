@@ -239,7 +239,7 @@ def scene_frames(sc, tmp_dirs):
             t = i / FPS
             img = Image.new("RGBA", (W, H), (255, 255, 255, 255))
             d = ImageDraw.Draw(img)
-            y = 330
+            y = sc.get("text_y", 330)
             for line in render.wrap(sc["text"], f, W - 2 * 90):
                 words = " ".join("".join(p for p, _ in w) for w in line)
                 d.text(((W - f.getlength(words)) / 2, y), words, font=f, fill=INK)
