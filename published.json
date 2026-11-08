@@ -1166,5 +1166,29 @@
     "mediaId": "17889562434485774",
     "permalink": "https://www.instagram.com/p/DffQBoEEw0C/",
     "account": "nesso_italia"
+  },
+  "2026-11-08-ig-dk-reel-sol": {
+    "channel": "ig-dk",
+    "at": "2026-11-08T20:00+01:00",
+    "publishedAt": "2026-11-08T19:02:35.837Z",
+    "mediaId": "18354133894284892",
+    "permalink": "https://www.instagram.com/reel/Dffdei9FQAI/",
+    "account": "nesso_danmark"
+  },
+  "2026-11-08-ig-en-reel-mortgage": {
+    "channel": "ig-en",
+    "at": "2026-11-08T20:00+01:00",
+    "publishedAt": "2026-11-08T19:03:22.059Z",
+    "mediaId": "18084251150528903",
+    "permalink": "https://www.instagram.com/reel/DffdkEdjo2B/",
+    "account": "nesso_global"
+  },
+  "2026-11-08-ig-it-reel-mutuo": {
+    "channel": "ig-it",
+    "at": "2026-11-08T20:00+01:00",
+    "publishedAt": "2026-11-08T19:03:59.935Z",
+    "mediaId": "17912706315481790",
+    "permalink": "https://www.instagram.com/reel/DffdqHiGUV0/",
+    "account": "nesso_italia"
   }
 }
