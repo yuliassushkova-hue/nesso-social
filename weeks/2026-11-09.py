@@ -57,8 +57,8 @@ def chat(day, time, slug, hook_clip, who, role, color, hook, thread, headline, s
             ], "caption": caption(body, cat, True)}
 
 
-def film(day, slug, shots, body, cat="visit"):
-    """shots: (clip id, start, secs, words, phone or None). *word* is italic."""
+def film(day, slug, shots, body, end, cat="visit"):
+    """shots: (clip id, start, secs, words, phone or None). *word* is italic. end: the clip under the logo."""
     clips, cards = [], []
     for clip, start, secs, words, phone in shots:
         clips.append({"file": f"{P}{clip}.mp4", "start": start, "secs": secs})
@@ -69,7 +69,7 @@ def film(day, slug, shots, body, cat="visit"):
             card.update({"phone": M + phone, "phone_top": 400, "phone_height": 1480, "phone_tilt": -3, "phone_dx": 0,
                          "size": 96, "text_top": True, "text_y": 0, "text": words.replace("\n", " ")})
         cards.append(card)
-    clips.append({"file": P + "40187579.mp4", "start": 0.5, "secs": 2.3})
+    clips.append({"file": P + end + ".mp4", "start": 0.5, "secs": 2.3})
     cards.append({"kind": "brand", "sub": LINK, "secs": 2.3})
     music = "music-beautiful-dream" if day % 2 == 0 else "music-classical-vibes"
     return {"id": f"r-{slug}", "type": "reel", "channel": "ig-it", "at": at(day, "13:00"), "slug": f"reel-{slug}",
@@ -95,7 +95,7 @@ PERCHE = runpy.run_path(str(Path(__file__).parent / "next-perche-nesso-carousel.
 
 ITEMS = [
     # ---------------------------------------------------------------- Monday 9
-    chat(9, "08:00", "dipende", ("7710747", 0.5), "Sara", "Amica", ORANGE_AV, "Chiedilo all'AI se la casa è rumorosa 🤖",
+    chat(9, "08:00", "dipende", ("6808082", 0.5), "Sara", "Amica", ORANGE_AV, "Chiedilo all'AI se la casa è rumorosa 🤖",
          [("me", "L'ho chiesto 🙃", 0.0), ("them", "E?", 0.5), ("me", "Ha detto «dipende» 😅", 0.0)],
          "L'AI non è nella stanza.\nIl tuo telefono sì.", "Nesso misura rumore, pavimento e sole, in visita.",
          "07-misura-rumore-finestra.png",
@@ -106,10 +106,11 @@ ITEMS = [
          "Telefono piatto sulla parete: dove è stata rifatta, l'ombra si vede."),
     film(9, "di-sera", [
         ("34626564", 0.5, 1.2, "Torna", None), ("34626564", 1.8, 1.2, "*di sera.*", None),
-        ("37557759", 0.5, 1.5, "La stessa strada,", None), ("36300251", 0.5, 1.5, "un'altra *luce.*", None),
-        ("7646611", 0.5, 1.2, "Le persone.", None), ("34626564", 6.0, 1.2, "I *parcheggi.*", None),
-        ("29513615", 0.5, 2.6, "Fai il giro\n*dell'isolato.*", "02-vivi-mappa.png"),
-    ], "Di giorno, con chi ti mostra la casa, ogni strada sembra la stessa.\n\nTorna dopo il buio e fai il giro dell'isolato: segna luce, persone, parcheggi. Nesso lo tiene nel tuo registro come una tua osservazione. Vale una sera sola, e non è un giudizio sulla zona o su chi ci vive."),
+        ("37557759", 0.5, 1.5, "La stessa strada,", None), ("34626564", 6.0, 1.5, "un'altra *luce.*", None),
+        ("7578792", 0.5, 1.2, "Le persone.", None), ("37557759", 4.0, 1.2, "I *parcheggi.*", None),
+        ("37557759", 8.0, 2.6, "Fai il giro\n*dell'isolato.*", "02-vivi-mappa.png"),
+    ], "Di giorno, con chi ti mostra la casa, ogni strada sembra la stessa.\n\nTorna dopo il buio e fai il giro dell'isolato: segna luce, persone, parcheggi. Nesso lo tiene nel tuo registro come una tua osservazione. Vale una sera sola, e non è un giudizio sulla zona o su chi ci vive.",
+       end="30939183"),
     card(9, "15:30", "fatto-detrazione", "orange", "LO SAPEVI?", "Sulla casa dove vai a vivere puoi detrarre il *19%* della provvigione.",
          "Dall'IRPEF, su massimo €1.000 di provvigione, nell'anno in cui la paghi."),
     {"id": "k-perche", "type": "carousel", "channel": "ig-it", "at": at(9, "18:00"), "slug": "carosello-perche-nesso",
@@ -128,7 +129,7 @@ ITEMS = [
     tomorrow(9, "crepa", "Una crepa si fotografa con una *moneta.*"),
 
     # ---------------------------------------------------------------- Tuesday 10
-    chat(10, "08:00", "crepa", ("8293126", 0.5), "Proprietario", "Annuncio", INK_AV, "È solo un po' di assestamento 🙂",
+    chat(10, "08:00", "crepa", ("7817149", 0.5), "Proprietario", "Annuncio", INK_AV, "È solo un po' di assestamento 🙂",
          [("me", "Posso fotografarla con una moneta?", 0.0), ("them", "Con una moneta? 😅", 0.8), ("me", "Così vedo quanto è larga.", 0.0)],
          "Fotografala\ncon una moneta.", "Se conta o no, lo dice un tecnico.", "06-dentro-property-check.png",
          "«È solo assestamento.» Può darsi. Fotografala lo stesso.\n\nDi fronte, con una moneta o una tessera nella foto, e segna dove inizia e dove finisce. Nesso tiene la foto accanto alla tua nota. Se una crepa conti o no è una domanda per chi può vedere l'edificio."),
@@ -136,12 +137,12 @@ ITEMS = [
     card(10, "12:30", "consiglio-interruttori", "orange", "IN VISITA", "Premi *ogni* interruttore.",
          "Segna quelli che non fanno niente."),
     film(10, "bollette", [
-        ("13441354", 0.5, 1.3, "A gennaio", None), ("31960017", 0.5, 1.0, "*quanto*", None),
-        ("6964001", 0.5, 1.3, "la paghi?", None), ("29532417", 0.5, 1.2, "Chiedi", None),
-        ("31679132", 0.5, 1.2, "12 mesi", None), ("6323324", 0.5, 1.4, "di *bollette.*", None),
-        ("29681899", 0.5, 2.6, "E il rendiconto\n*condominiale.*", "06-dentro-property-check.png"),
+        ("7597965", 0.5, 1.3, "A gennaio", None), ("7646371", 0.5, 1.0, "*quanto*", None),
+        ("4554455", 0.5, 1.3, "la paghi?", None), ("7646403", 0.5, 1.2, "Chiedi", None),
+        ("31679132", 0.5, 1.2, "12 mesi", None), ("4569531", 0.5, 1.4, "di *bollette.*", None),
+        ("7647439", 0.5, 2.6, "E il rendiconto\n*condominiale.*", "06-dentro-property-check.png"),
     ], "Una casa vista a novembre non dice quanto costa scaldarla a gennaio.\n\nIn visita chiedi dodici mesi di bollette e il rendiconto condominiale. Sono dodici mesi di qualcun altro, col suo termostato e le sue abitudini: i tuoi saranno diversi, ma la cifra di gennaio dice com'è fatto l'edificio.",
-       cat="cost"),
+       end="7817154", cat="cost"),
     card(10, "15:30", "fatto-superficie", "violet", "LO SAPEVI?", "La *superficie commerciale* comprende anche i muri.",
          "E i balconi e la cantina. Chiedi quale cifra è stata usata."),
     chat(10, "20:00", "campo", ("5697829", 0.5), "Chiara", "Collega", VIOLET_AV, "Smart working dalla camera? 💻",
@@ -150,3 +151,6 @@ ITEMS = [
          "La domanda che fa per prima chi lavora dalla camera in fondo. Nessun annuncio risponde.\n\nIn visita mettiti dove lavoreresti, misura, spostati in un secondo punto e misura di nuovo. Il limite: è quello che il tuo telefono ha raggiunto quel pomeriggio. Un altro operatore può comportarsi in modo diverso.", size=116),
     tomorrow(10, "caldaia", "Quanti anni ha la *caldaia*? Chiedi il libretto."),
 ]
+
+# The carousel goes out once its photos are ones @nesso_italia has not shown (founder, 8 November).
+ITEMS = [item for item in ITEMS if item["id"] != "k-perche"]
