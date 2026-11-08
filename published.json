@@ -1102,5 +1102,29 @@
     "mediaId": "18038978162853426",
     "permalink": "https://www.instagram.com/stories/nesso_italia/4025839265670020740",
     "account": "nesso_italia"
+  },
+  "2026-11-08-ig-dk-reel-saelger": {
+    "channel": "ig-dk",
+    "at": "2026-11-08T13:00+01:00",
+    "publishedAt": "2026-11-08T12:03:04.951Z",
+    "mediaId": "18109082030262113",
+    "permalink": "https://www.instagram.com/reel/DfeteuyiI4E/",
+    "account": "nesso_danmark"
+  },
+  "2026-11-08-ig-en-reel-neighbourhood": {
+    "channel": "ig-en",
+    "at": "2026-11-08T13:00+01:00",
+    "publishedAt": "2026-11-08T12:03:42.987Z",
+    "mediaId": "18500065459096978",
+    "permalink": "https://www.instagram.com/reel/DfetjjGjS5T/",
+    "account": "nesso_global"
+  },
+  "2026-11-08-ig-it-reel-quartiere": {
+    "channel": "ig-it",
+    "at": "2026-11-08T13:00+01:00",
+    "publishedAt": "2026-11-08T12:04:29.482Z",
+    "mediaId": "18077753114767315",
+    "permalink": "https://www.instagram.com/reel/DfetoKQD4ME/",
+    "account": "nesso_italia"
   }
 }
