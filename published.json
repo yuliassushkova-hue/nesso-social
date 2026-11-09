@@ -1342,5 +1342,29 @@
     "mediaId": "18135245020737861",
     "permalink": "https://www.instagram.com/p/Dfh0j5fIKPJ/",
     "account": "nesso_danmark"
+  },
+  "2026-11-09-ig-dk-reel-gaeldsfaktor": {
+    "channel": "ig-dk",
+    "at": "2026-11-09T20:00+01:00",
+    "publishedAt": "2026-11-09T19:03:51.868Z",
+    "mediaId": "18100077638408171",
+    "permalink": "https://www.instagram.com/reel/DfiCa1dHHu2/",
+    "account": "nesso_danmark"
+  },
+  "2026-11-09-ig-en-reel-paper": {
+    "channel": "ig-en",
+    "at": "2026-11-09T20:00+01:00",
+    "publishedAt": "2026-11-09T19:04:35.856Z",
+    "mediaId": "18109943561353252",
+    "permalink": "https://www.instagram.com/reel/DfiCgIuCTru/",
+    "account": "nesso_global"
+  },
+  "2026-11-09-ig-it-reel-foglio": {
+    "channel": "ig-it",
+    "at": "2026-11-09T20:00+01:00",
+    "publishedAt": "2026-11-09T19:05:33.678Z",
+    "mediaId": "17994929733097510",
+    "permalink": "https://www.instagram.com/reel/DfiCn6IFBbj/",
+    "account": "nesso_italia"
   }
 }
