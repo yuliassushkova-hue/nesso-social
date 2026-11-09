@@ -1,16 +1,13 @@
-"""@nesso_italia, week of 9 November 2026. Monday and Tuesday first, the rest of the week follows.
+"""@nesso_italia, week of 9 November 2026. Monday and Tuesday; the rest of the week is weeks/2026-11-11.py.
 
 Every step and every limit is the app's own text from nesso.fit/it/checklist-visita-casa, read on
 8 November. The €250.000 example is the costs screen on the phone (see weeks/2026-11-02-carousels.py).
 Perché Nesso is the pillar in CREATIVE.md §7: the two posts here are the ones the founder approved
-on 1 November (weeks/next-perche-nesso.py and -carousel.py).
+on 1 November (weeks/next-perche-nesso.py and -carousel.py); the carousel went to Wednesday.
 
 Rome times. Reels 08:00, 13:00, 20:00. Stories 09:30, 12:30, 15:30, 21:30. Carousels 18:00.
 Footage and photos: Pexels License. Sounds and music: Mixkit.
 """
-import runpy
-from pathlib import Path
-
 P = "~/Documents/GitHub/nesso-assets/pexels/"
 M = "~/Documents/GitHub/nesso_mobile/docs/marketing/mockups-it/"
 LINK = "Prova Nesso · link in bio"
@@ -91,8 +88,6 @@ def tomorrow(day, slug, text):
     return card(day, "21:30", f"domani-{slug}", "violet", "DOMANI ALLE 8", text, "Prima di firmare, un controllo al giorno.")
 
 
-PERCHE = runpy.run_path(str(Path(__file__).parent / "next-perche-nesso-carousel.py"))["SPEC"]
-
 ITEMS = [
     # ---------------------------------------------------------------- Monday 9
     chat(9, "08:00", "dipende", ("6808082", 0.5), "Sara", "Amica", ORANGE_AV, "Chiedilo all'AI se la casa è rumorosa 🤖",
@@ -113,15 +108,6 @@ ITEMS = [
        end="30939183"),
     card(9, "15:30", "fatto-detrazione", "orange", "LO SAPEVI?", "Sulla casa dove vai a vivere puoi detrarre il *19%* della provvigione.",
          "Dall'IRPEF, su massimo €1.000 di provvigione, nell'anno in cui la paghi."),
-    {"id": "k-perche", "type": "carousel", "channel": "ig-it", "at": at(9, "18:00"), "slug": "carosello-perche-nesso",
-     "panorama": PERCHE,
-     "caption": "Un chatbot ti dice «dipende». In quella casa non è mai entrato. Scorri.\n\n"
-                "Il rumore si misura nella stanza, con la finestra aperta e poi chiusa. Le spese si contano sul prezzo: €250.000 da un privato, prima casa, agenzia al 3%, mutuo di €175.000. "
-                "Sono €14.687,50 in più del prezzo, prima di notaio e banca. È un calcolo sulle regole nazionali, non una consulenza.\n\n"
-                "Prova Nesso: link in bio.\n\n"
-                "Hai mai chiesto a un chatbot un consiglio sulla casa? Scrivilo nei commenti 👇\n"
-                "Salvalo prima di firmare 📌\nMandalo a chi sta cercando casa.\n\n"
-                "#comprarecasa #cercocasa #visitacasa #primacasa #consiglicasa"},
     chat(9, "20:00", "foglio", ("7646370", 0.5), "Marco", "Agenzia", VIOLET_AV, "Infissi nuovi, isolano benissimo ✨",
          [("me", "Posso fare la prova del foglio?", 0.0), ("them", "Del… foglio? 😅", 0.9)],
          "Un foglio di carta.\nUn minuto.", "Dove scivola via, l'anta non preme.", "06-dentro-property-check.png",
@@ -152,5 +138,3 @@ ITEMS = [
     tomorrow(10, "caldaia", "Quanti anni ha la *caldaia*? Chiedi il libretto."),
 ]
 
-# The carousel goes out once its photos are ones @nesso_italia has not shown (founder, 8 November).
-ITEMS = [item for item in ITEMS if item["id"] != "k-perche"]
