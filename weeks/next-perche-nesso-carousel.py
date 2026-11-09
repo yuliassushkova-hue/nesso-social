@@ -1,13 +1,14 @@
 """Perché Nesso, seamless carousel for the week of 9 November (founder feedback 2026-11-01:
 only the opening sentence and the phone cross a cut, no "Gratis", logo at the end without a plate).
+The first, third and fourth photos changed on 9 November: the earlier ones had been on @nesso_italia.
 Render: tools/panorama.py render_panorama(SPEC, out_dir)."""
 F = "~/Documents/GitHub/nesso-assets/pexels-photos/"
 M = "~/Documents/GitHub/nesso_mobile/docs/marketing/mockups-it/"
 SPEC = {"slides": 7, "photos": [
-    {"file": F + "12932887.jpg", "x": 0, "focus": 0.35},
+    {"file": F + "8082324.jpg", "x": 0, "focus": 0.5},
     {"file": F + "16240690.jpg", "x": 1700, "focus": 0.5},
-    {"file": F + "6077368.jpg", "x": 3400, "focus": 0.5},
-    {"file": F + "30139520.jpg", "x": 5100, "focus": 0.5},
+    {"file": F + "7511695.jpg", "x": 3400, "focus": 0.5},
+    {"file": F + "6890395.jpg", "x": 5100, "focus": 0.5},
     {"file": F + "36729696.jpg", "x": 6800, "focus": 0.15},
   ],
   "blocks": [
