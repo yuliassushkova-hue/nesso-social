@@ -1862,5 +1862,21 @@
     "mediaId": "18118437416017485",
     "permalink": "https://www.instagram.com/stories/nesso_global/4028829242872025021",
     "account": "nesso_global"
+  },
+  "2026-11-12-ig-dk-reel-elevator": {
+    "channel": "ig-dk",
+    "at": "2026-11-12T20:00+01:00",
+    "publishedAt": "2026-11-12T19:04:14.103Z",
+    "mediaId": "17956988934338976",
+    "permalink": "https://www.instagram.com/reel/Dfpw24glMUa/",
+    "account": "nesso_danmark"
+  },
+  "2026-11-12-ig-en-reel-lift": {
+    "channel": "ig-en",
+    "at": "2026-11-12T20:00+01:00",
+    "publishedAt": "2026-11-12T19:05:41.557Z",
+    "mediaId": "18004595063833958",
+    "permalink": "https://www.instagram.com/reel/DfpxAi_gpqb/",
+    "account": "nesso_global"
   }
 }
