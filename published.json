@@ -1894,5 +1894,21 @@
     "mediaId": "17913014388306910",
     "permalink": "https://www.instagram.com/stories/nesso_global/4029009999515048766",
     "account": "nesso_global"
+  },
+  "2026-11-13-ig-dk-reel-bank": {
+    "channel": "ig-dk",
+    "at": "2026-11-13T08:00+01:00",
+    "publishedAt": "2026-11-13T07:02:55.611Z",
+    "mediaId": "17984201121134291",
+    "permalink": "https://www.instagram.com/reel/DfrDF70jPRb/",
+    "account": "nesso_danmark"
+  },
+  "2026-11-13-ig-en-reel-knock": {
+    "channel": "ig-en",
+    "at": "2026-11-13T08:00+01:00",
+    "publishedAt": "2026-11-13T07:03:28.056Z",
+    "mediaId": "18499003687105591",
+    "permalink": "https://www.instagram.com/reel/DfrDLRAlNKL/",
+    "account": "nesso_global"
   }
 }
