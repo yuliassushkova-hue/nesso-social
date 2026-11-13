@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// nesso-social: one queue of posts, four channels, published on a schedule.
+// nesso-social: one queue of posts, published on a schedule to Instagram, Threads, LinkedIn and YouTube.
 //
 // A post is a folder under posts/ holding post.md (front matter + caption) and its media.
 // A post on main is approved: drafts live on branches and are approved by merging.
@@ -14,6 +14,10 @@
 //   node bin/social.mjs exchange-threads NAME  short-lived Threads token -> long-lived secret NAME
 //   node bin/social.mjs linkedin-login CHANNEL sign a LinkedIn channel in, on this Mac (every 60 days)
 //   node bin/social.mjs linkedin-expiry        open an issue when a LinkedIn sign-in is about to lapse
+//   node bin/social.mjs youtube-login CHANNEL  sign a YouTube channel in, on this Mac (once)
+//
+// Every Instagram Reel also goes to the YouTube channel of its language as a Short, at the same
+// time: the YouTube post is derived from the Instagram one and has no folder of its own.
 
 import { readFileSync, readdirSync, existsSync, writeFileSync, statSync } from 'node:fs';
 import { join, extname, basename, dirname, resolve, relative, sep } from 'node:path';
@@ -51,6 +55,10 @@ export const CHANNELS = {
   // app of its own, and the Page's organization id in accounts.json.
   'li-julia': { platform: 'linkedin', token: 'LI_JULIA_TOKEN', scope: 'openid profile w_member_social' },
   'li-nesso': { platform: 'linkedin', token: 'LI_NESSO_TOKEN', account: 'LI_NESSO_ORG_ID', scope: 'w_organization_social' },
+  // The token is the channel's refresh token; YT_CLIENT_ID and YT_CLIENT_SECRET are the one Google app.
+  'yt-it': { platform: 'youtube', token: 'YT_IT_TOKEN', mirrors: 'ig-it', lang: 'it', link: 'https://nesso.fit/it?via=youtube' },
+  'yt-en': { platform: 'youtube', token: 'YT_EN_TOKEN', mirrors: 'ig-en', lang: 'en', link: 'https://nesso.fit/?via=youtube' },
+  'yt-dk': { platform: 'youtube', token: 'YT_DK_TOKEN', mirrors: 'ig-dk', lang: 'da', link: 'https://nesso.fit/da?via=youtube' },
 };
 
 // What each platform accepts, from its own content-publishing docs.
@@ -68,6 +76,13 @@ const RULES = {
     videos: ['.mp4', '.mov'],
     captionMax: 500,
     hashtagMax: Infinity,
+  },
+  youtube: {
+    types: { reel: [1, 1] }, // a vertical video under three minutes is a Short
+    images: [],
+    videos: ['.mp4', '.mov'],
+    captionMax: 5000, // the description, in bytes; counted as characters here, which is stricter for ASCII only
+    hashtagMax: 60, // above 60 YouTube ignores every hashtag on the video
   },
   linkedin: {
     types: { text: [0, 0], image: [1, 1], 'multi-image': [2, 20] },
@@ -141,11 +156,37 @@ export function validate(post) {
 
 function readPosts() {
   if (!existsSync(POSTS)) return [];
-  return readdirSync(POSTS)
+  const posts = readdirSync(POSTS)
     .map((name) => join(POSTS, name))
     .filter((dir) => statSync(dir).isDirectory() && existsSync(join(dir, 'post.md')))
-    .map(parsePost)
-    .sort((a, b) => Date.parse(a.at) - Date.parse(b.at) || a.id.localeCompare(b.id));
+    .map(parsePost);
+  return [...posts, ...posts.flatMap(mirrorsOf)].sort((a, b) => Date.parse(a.at) - Date.parse(b.at) || a.id.localeCompare(b.id));
+}
+
+// ---------------------------------------------------------------- YouTube Shorts from Reels
+
+// Reels before this were made for Instagram only; YouTube copies start here (founder, 13 November).
+const YOUTUBE_FROM = Date.parse('2026-11-13T00:00+01:00');
+
+export function mirrorsOf(post) {
+  if (post.type !== 'reel' || post.errors || !(Date.parse(post.at) >= YOUTUBE_FROM)) return [];
+  return Object.entries(CHANNELS)
+    .filter(([, channel]) => channel.mirrors === post.channel)
+    .map(([name, channel]) => ({ ...post, id: `${post.id}~${name}`, channel: name, caption: youtubeDescription(post.caption, channel.link), mirror: true }));
+}
+
+// Instagram says "link in bio"; on YouTube the link goes in the description itself.
+export function youtubeDescription(caption, link) {
+  return caption.replace(/link (in|i) bio\.?/giu, link).replace(/[<>]/g, '');
+}
+
+// The title is the caption's first sentence, cut at a word to YouTube's 100 characters.
+export function youtubeTitle(caption) {
+  const first = caption.split('\n').map((l) => l.trim()).find(Boolean)?.replace(/[<>]/g, '') ?? 'Nesso';
+  const sentence = first.match(/^.+?[.!?»"](?=\s|$)/u)?.[0] ?? first;
+  const title = sentence.length <= 100 ? sentence : first;
+  if (title.length <= 100) return title;
+  return `${title.slice(0, 99).replace(/\s+\S*$/u, '')}…`;
 }
 
 // Instagram account ids are not secrets, so they live in the repository: accounts.json maps a
@@ -263,6 +304,7 @@ async function igAccount(token, accountId) {
 
 async function whoIs(platform, token, accountId, name) {
   if (platform === 'instagram') return igAccount(token, accountId);
+  if (platform === 'youtube') return youtubeChannel(await googleAccess(token));
   if (platform === 'linkedin') {
     const author = await linkedinAuthor(name, token);
     return { id: author.urn, username: author.label };
@@ -417,6 +459,60 @@ async function publishLinkedIn(post, token) {
   return { mediaId: created.id, permalink: created.id ? `https://www.linkedin.com/feed/update/${created.id}/` : null, account: author.label };
 }
 
+// YouTube takes the file itself, in a resumable upload: a session URL first, then the bytes.
+const GOOGLE_TOKEN = 'https://oauth2.googleapis.com/token';
+const YT = 'https://www.googleapis.com/youtube/v3';
+
+async function googleAccess(refreshToken) {
+  const { YT_CLIENT_ID: clientId, YT_CLIENT_SECRET: secret } = process.env;
+  if (!clientId || !secret) throw new Error('YT_CLIENT_ID and YT_CLIENT_SECRET are not set');
+  const res = await fetch(GOOGLE_TOKEN, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ client_id: clientId, client_secret: secret, refresh_token: refreshToken, grant_type: 'refresh_token' }),
+  });
+  const answer = await res.json().catch(() => ({}));
+  if (!res.ok || !answer.access_token) throw new Error(`Google refused the sign-in: ${answer.error_description ?? answer.error ?? `HTTP ${res.status}`}`);
+  return answer.access_token;
+}
+
+async function googleError(res) {
+  const body = await res.json().catch(() => ({}));
+  return new Error(`YouTube answered HTTP ${res.status}: ${body.error?.message ?? 'no message'}`);
+}
+
+async function youtubeChannel(access) {
+  const res = await fetch(`${YT}/channels?part=snippet&mine=true`, { headers: { Authorization: `Bearer ${access}` } });
+  if (!res.ok) throw await googleError(res);
+  const channel = (await res.json()).items?.[0];
+  if (!channel) throw new Error('this Google sign-in has no YouTube channel');
+  return { username: channel.snippet.title, id: channel.id };
+}
+
+async function publishYouTube(post, refreshToken) {
+  const access = await googleAccess(refreshToken);
+  const channel = CHANNELS[post.channel];
+  const file = join(post.dir, post.media[0]);
+  const bytes = readFileSync(file);
+  const type = MIME[extname(file).toLowerCase()];
+  const meta = {
+    snippet: { title: youtubeTitle(post.caption), description: post.caption, categoryId: '26', defaultLanguage: channel.lang, defaultAudioLanguage: channel.lang },
+    // Stock footage and drawn cards: nothing realistic is made up, so nothing to disclose.
+    status: { privacyStatus: 'public', selfDeclaredMadeForKids: false, containsSyntheticMedia: false },
+  };
+  const start = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json; charset=UTF-8', 'X-Upload-Content-Type': type, 'X-Upload-Content-Length': String(bytes.length) },
+    body: JSON.stringify(meta),
+  });
+  if (!start.ok) throw await googleError(start);
+  const upload = await fetch(start.headers.get('location'), { method: 'PUT', headers: { 'Content-Type': type, 'Content-Length': String(bytes.length) }, body: bytes });
+  if (!upload.ok) throw await googleError(upload);
+  const video = await upload.json();
+  const me = await youtubeChannel(access).catch(() => ({ username: post.channel }));
+  return { mediaId: video.id, permalink: `https://www.youtube.com/shorts/${video.id}`, account: me.username };
+}
+
 // Both APIs fetch media from a public URL. The repository is public, so in Actions a file is
 // served straight from GitHub at the exact commit being published. An R2 bucket, when its
 // variables are set, is used instead (for a private repository).
@@ -490,7 +586,8 @@ async function publish({ dryRun }) {
   let failed = 0;
   for (const post of readPosts()) {
     const state = stateOf(post, log);
-    if (state === 'missed' && !log[post.id]) console.log(`! ${post.id} is more than ${MAX_LATE_HOURS}h past its time and was not published; move its time to publish it`);
+    if (post.mirror && !process.env[CHANNELS[post.channel].token]) continue; // the channel is not signed in yet
+    if (state === 'missed' && !log[post.id] && !post.mirror) console.log(`! ${post.id} is more than ${MAX_LATE_HOURS}h past its time and was not published; move its time to publish it`);
     if (state !== 'due') continue;
     const errors = validate(post);
     if (errors.length) {
@@ -507,13 +604,15 @@ async function publish({ dryRun }) {
       const token = process.env[channel.token];
       if (!token) throw new Error(`secret ${channel.token} is not set`);
       const urls = [];
-      if (channel.platform !== 'linkedin') for (const name of post.media) urls.push(await mediaUrl(post, name));
+      if (!['linkedin', 'youtube'].includes(channel.platform)) for (const name of post.media) urls.push(await mediaUrl(post, name));
       const result =
         channel.platform === 'instagram'
           ? await publishInstagram(post, token, urls, accountIdFor(post.channel))
           : channel.platform === 'linkedin'
             ? await publishLinkedIn(post, token)
-            : await publishThreads(post, token, urls);
+            : channel.platform === 'youtube'
+              ? await publishYouTube(post, token)
+              : await publishThreads(post, token, urls);
       log[post.id] = { channel: post.channel, at: post.at, publishedAt: new Date().toISOString(), ...result };
       writeLog(log); // after each post, so a later failure cannot cause a repeat
       console.log(`✓ ${post.id} → @${result.account} ${result.permalink ?? result.mediaId}`);
@@ -604,6 +703,10 @@ async function refreshTokens() {
     if (!token) continue;
     if (channel.platform === 'linkedin') {
       console.log(`- ${channel.token}: LinkedIn gives this kind of app no refresh; run linkedin-login before it lapses`);
+      continue;
+    }
+    if (channel.platform === 'youtube') {
+      console.log(`- ${channel.token} is a Google refresh token: it does not expire while the app is in production`);
       continue;
     }
     // A Facebook-format token from a system user does not expire and has no refresh call.
@@ -697,6 +800,63 @@ async function linkedinLogin(name) {
   console.log(`✓ ${name} posts as ${who.label}; ${channel.token} works until ${lastDay}`);
 }
 
+// Run on this Mac, once per channel. Google's page asks which account and which channel; a Google
+// account with several channels shows each. The answer comes back to this Mac on a loopback
+// address, which a Desktop OAuth client accepts without registering it. Only the refresh token is
+// kept, as the channel's secret, and it lasts while the app's consent screen is "In production".
+const GOOGLE_REDIRECT = 'http://127.0.0.1:8766';
+
+function googleCode(clientId) {
+  const state = randomBytes(16).toString('hex');
+  const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+  url.search = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: GOOGLE_REDIRECT,
+    response_type: 'code',
+    scope: 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly',
+    access_type: 'offline',
+    prompt: 'consent select_account',
+    state,
+  }).toString();
+  return new Promise((done, fail) => {
+    const server = createServer((req, res) => {
+      const got = new URL(req.url, GOOGLE_REDIRECT);
+      if (got.pathname !== '/') return res.writeHead(404).end();
+      const code = got.searchParams.get('state') === state ? got.searchParams.get('code') : null;
+      res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' }).end(code ? 'Done. You can close this tab.' : 'Not signed in. See the terminal.');
+      server.close();
+      if (code) done(code);
+      else fail(new Error(`Google answered without a code: ${got.searchParams.get('error') ?? 'the state did not match'}`));
+    });
+    server.on('error', fail);
+    server.listen(8766, '127.0.0.1', () => {
+      console.log(`Opening Google. If no browser opens, go to:\n${url}`);
+      try {
+        execFileSync('open', [url.toString()]);
+      } catch {}
+    });
+  });
+}
+
+async function youtubeLogin(name) {
+  const channel = CHANNELS[name];
+  const names = Object.keys(CHANNELS).filter((n) => CHANNELS[n].platform === 'youtube');
+  if (channel?.platform !== 'youtube') throw new Error(`name a YouTube channel: ${names.join(', ')}`);
+  const { YT_CLIENT_ID: clientId, YT_CLIENT_SECRET: secret } = process.env;
+  if (!clientId || !secret) throw new Error('set YT_CLIENT_ID and YT_CLIENT_SECRET first (read -s, never on the command line)');
+  const code = await googleCode(clientId);
+  const res = await fetch(GOOGLE_TOKEN, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ code, client_id: clientId, client_secret: secret, redirect_uri: GOOGLE_REDIRECT, grant_type: 'authorization_code' }),
+  });
+  const answer = await res.json().catch(() => ({}));
+  if (!res.ok || !answer.refresh_token) throw new Error(`Google gave no refresh token: ${answer.error_description ?? answer.error ?? `HTTP ${res.status}`}`);
+  const me = await youtubeChannel(answer.access_token); // fails here, before anything is stored, if the sign-in has no channel
+  setSecret(channel.token, answer.refresh_token);
+  console.log(`✓ ${name} uploads to the YouTube channel "${me.username}" (${me.id}); ${channel.token} is set`);
+}
+
 // Run weekly by Actions: an issue for each LinkedIn sign-in with ten days or fewer left, opened once.
 const LI_WARN_DAYS = 10;
 
@@ -743,6 +903,7 @@ const commands = {
   'exchange-threads': () => exchangeThreads(arg),
   'linkedin-login': () => linkedinLogin(arg),
   'linkedin-expiry': () => linkedinExpiry(),
+  'youtube-login': () => youtubeLogin(arg),
 };
 if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('social.mjs')) {
   if (!commands[command]) {
