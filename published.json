@@ -2022,5 +2022,21 @@
     "mediaId": "18159407218522362",
     "permalink": "https://www.instagram.com/stories/nesso_global/4029735996803035551",
     "account": "nesso_global"
+  },
+  "2026-11-14-ig-dk-reel-areal": {
+    "channel": "ig-dk",
+    "at": "2026-11-14T08:00+01:00",
+    "publishedAt": "2026-11-14T07:02:19.270Z",
+    "mediaId": "18098149346406421",
+    "permalink": "https://www.instagram.com/reel/Dftn0LLlZ81/",
+    "account": "nesso_danmark"
+  },
+  "2026-11-14-ig-en-reel-sqm": {
+    "channel": "ig-en",
+    "at": "2026-11-14T08:00+01:00",
+    "publishedAt": "2026-11-14T07:03:10.258Z",
+    "mediaId": "17919579039263238",
+    "permalink": "https://www.instagram.com/reel/Dftn6XnFbXo/",
+    "account": "nesso_global"
   }
 }
