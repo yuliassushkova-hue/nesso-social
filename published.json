@@ -2070,5 +2070,21 @@
     "mediaId": "18033086735919719",
     "permalink": "https://www.instagram.com/stories/nesso_global/4030187854835771566",
     "account": "nesso_global"
+  },
+  "2026-11-14-ig-dk-reel-sofaen": {
+    "channel": "ig-dk",
+    "at": "2026-11-14T13:00+01:00",
+    "publishedAt": "2026-11-14T12:02:41.657Z",
+    "mediaId": "18100631225433421",
+    "permalink": "https://www.instagram.com/reel/DfuKMNPifA4/",
+    "account": "nesso_danmark"
+  },
+  "2026-11-14-ig-en-reel-sofa": {
+    "channel": "ig-en",
+    "at": "2026-11-14T13:00+01:00",
+    "publishedAt": "2026-11-14T12:04:08.613Z",
+    "mediaId": "17942717487400709",
+    "permalink": "https://www.instagram.com/reel/DfuKW4LDeBr/",
+    "account": "nesso_global"
   }
 }
