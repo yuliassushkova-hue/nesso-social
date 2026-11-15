@@ -14,7 +14,7 @@
 //   node bin/social.mjs exchange-threads NAME  short-lived Threads token -> long-lived secret NAME
 //   node bin/social.mjs linkedin-login CHANNEL sign a LinkedIn channel in, on this Mac (every 60 days)
 //   node bin/social.mjs linkedin-expiry        open an issue when a LinkedIn sign-in is about to lapse
-//   node bin/social.mjs youtube-login CHANNEL  sign a YouTube channel in, on this Mac (once)
+//   node bin/social.mjs youtube-login CHANNEL FILE  sign a YouTube channel in, on this Mac (once)
 //
 // Every Instagram Reel also goes to the YouTube channel of its language as a Short, at the same
 // time: the YouTube post is derived from the Instagram one and has no folder of its own.
@@ -838,12 +838,23 @@ function googleCode(clientId) {
   });
 }
 
-async function youtubeLogin(name) {
+// The client comes from the JSON file Google Cloud offers under "Download JSON", named as the
+// second argument, or from YT_CLIENT_ID and YT_CLIENT_SECRET. From a file, both are also stored as
+// repository secrets, so the publisher has them; nothing is printed.
+function googleClient(file) {
+  if (!file) return { clientId: process.env.YT_CLIENT_ID, secret: process.env.YT_CLIENT_SECRET, fromFile: false };
+  const json = JSON.parse(readFileSync(file, 'utf8'));
+  const app = json.installed ?? json.web ?? {};
+  if (!app.client_id || !app.client_secret) throw new Error(`${file} holds no client_id and client_secret; download the Desktop app client's JSON`);
+  return { clientId: app.client_id, secret: app.client_secret, fromFile: true };
+}
+
+async function youtubeLogin(name, file) {
   const channel = CHANNELS[name];
   const names = Object.keys(CHANNELS).filter((n) => CHANNELS[n].platform === 'youtube');
   if (channel?.platform !== 'youtube') throw new Error(`name a YouTube channel: ${names.join(', ')}`);
-  const { YT_CLIENT_ID: clientId, YT_CLIENT_SECRET: secret } = process.env;
-  if (!clientId || !secret) throw new Error('set YT_CLIENT_ID and YT_CLIENT_SECRET first (read -s, never on the command line)');
+  const { clientId, secret, fromFile } = googleClient(file);
+  if (!clientId || !secret) throw new Error('name the client JSON file from Google Cloud: node bin/social.mjs youtube-login yt-it ~/Downloads/client_secret_….json');
   const code = await googleCode(clientId);
   const res = await fetch(GOOGLE_TOKEN, {
     method: 'POST',
@@ -854,6 +865,10 @@ async function youtubeLogin(name) {
   if (!res.ok || !answer.refresh_token) throw new Error(`Google gave no refresh token: ${answer.error_description ?? answer.error ?? `HTTP ${res.status}`}`);
   const me = await youtubeChannel(answer.access_token); // fails here, before anything is stored, if the sign-in has no channel
   setSecret(channel.token, answer.refresh_token);
+  if (fromFile) {
+    setSecret('YT_CLIENT_ID', clientId);
+    setSecret('YT_CLIENT_SECRET', secret);
+  }
   console.log(`✓ ${name} uploads to the YouTube channel "${me.username}" (${me.id}); ${channel.token} is set`);
 }
 
@@ -903,7 +918,7 @@ const commands = {
   'exchange-threads': () => exchangeThreads(arg),
   'linkedin-login': () => linkedinLogin(arg),
   'linkedin-expiry': () => linkedinExpiry(),
-  'youtube-login': () => youtubeLogin(arg),
+  'youtube-login': () => youtubeLogin(arg, process.argv[4]),
 };
 if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('social.mjs')) {
   if (!commands[command]) {

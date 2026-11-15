@@ -126,7 +126,7 @@ LinkedIn запрещает автоматические действия на �
    unset LI_TOKEN
    ```
 
-7. Actions → **whoami**: в строке `li-julia` должно стоять имя владельца профиля.
+6. Actions → **whoami**: в строке `li-julia` должно стоять имя владельца профиля.
 
 **Каждые 60 дней вход нужно повторять** (шаг 6). Продлить его автоматически LinkedIn такому
 приложению не даёт. Workflow `linkedin-expiry` по понедельникам проверяет дату и за 10 дней до конца
@@ -161,30 +161,21 @@ LinkedIn запрещает автоматические действия на �
 3. **Экран входа** (Google Auth Platform → Branding и Audience): тип **External**, имя *Nesso*,
    почта поддержки. В Audience нажать **Publish app**, чтобы статус стал **In production**. В статусе
    *Testing* вход живёт 7 дней, потом загрузки перестают работать.
-4. Clients → **Create client** → тип **Desktop app**, имя `nesso-social`. Скопировать Client ID и
-   Client secret в надёжное место, не в чат.
-5. Сохранить их в GitHub, в папке `nesso-social` (команда спросит значение):
+4. Clients → **Create client** → тип **Desktop app**, имя `nesso-social` → **Download JSON**. Файл
+   не присылать в чат.
+5. Подключить каждый канал. В Терминале, в папке `nesso-social`, по одной команде на канал, с путём к
+   скачанному JSON-файлу. Откроется браузер: выбрать Google-аккаунт, затем **нужный канал**. Google
+   скажет, что приложение не проверено: «Дополнительные настройки» → «Перейти на страницу Nesso».
+   Это ваше собственное приложение. Ключ из файла команда сама сохранит в GitHub.
 
    ```bash
-   gh secret set YT_CLIENT_ID
-   gh secret set YT_CLIENT_SECRET
-   ```
-
-6. Подключить каждый канал. Откроется браузер: выбрать Google-аккаунт, затем **нужный канал**.
-   Google скажет, что приложение не проверено: «Дополнительные настройки» → «Перейти на страницу
-   Nesso». Это ваше собственное приложение.
-
-   ```bash
-   export YT_CLIENT_ID=…
-   read -s YT_CLIENT_SECRET; export YT_CLIENT_SECRET
-   node bin/social.mjs youtube-login yt-it    # канал Nesso Italia
-   node bin/social.mjs youtube-login yt-en    # канал Nesso Global
-   node bin/social.mjs youtube-login yt-dk    # канал Nesso Danmark
-   unset YT_CLIENT_SECRET
+   node bin/social.mjs youtube-login yt-it ~/Downloads/client_secret_*.json    # канал Nesso Italia
+   node bin/social.mjs youtube-login yt-en ~/Downloads/client_secret_*.json    # канал Nesso Global
+   node bin/social.mjs youtube-login yt-dk ~/Downloads/client_secret_*.json    # канал Nesso Danmark
    ```
 
    Команда пишет название канала, к которому подключилась. Если оно не то, повторить с этим каналом.
-7. Actions → **whoami**: в строках `yt-it`, `yt-en`, `yt-dk` должны стоять названия каналов.
+6. Actions → **whoami**: в строках `yt-it`, `yt-en`, `yt-dk` должны стоять названия каналов.
 
 **Что уходит на YouTube.** Видео то же, что в Instagram. Заголовок: первая фраза подписи (до 100
 знаков). Описание: подпись, где вместо «link in bio» стоит ссылка на nesso.fit. Ограничение YouTube:
