@@ -33,6 +33,11 @@ def _photo_layer(path, height, width=None, focus=0.5):
     im = Image.open(Path(path).expanduser()).convert("RGB")
     scale = height / im.height
     im = im.resize((round(im.width * scale), height), Image.LANCZOS)
+    if width and im.width < width:
+        # A portrait photo is narrower than its stretch: fill it, cropping top and bottom evenly.
+        im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
+        top = (im.height - height) // 2
+        im = im.crop((0, top, width, top + height))
     if width and im.width > width:
         left = round((im.width - width) * focus)
         im = im.crop((left, 0, left + width, height))
