@@ -1,6 +1,6 @@
 ---
 channel: ig-it
-at: 2026-11-13T18:00+01:00
+at: 2026-11-18T18:00+01:00
 type: carousel
 media: 01.jpg, 02.jpg, 03.jpg, 04.jpg, 05.jpg, 06.jpg, 07.jpg
 ---

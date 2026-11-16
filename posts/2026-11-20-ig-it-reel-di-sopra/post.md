@@ -1,6 +1,6 @@
 ---
 channel: ig-it
-at: 2026-11-15T13:00+01:00
+at: 2026-11-20T13:00+01:00
 type: reel
 media: reel.mp4
 ---
