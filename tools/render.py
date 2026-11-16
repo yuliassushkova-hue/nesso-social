@@ -631,10 +631,11 @@ def main(argv):
             media = "reel.mp4"
             secs = render_reel(item, folder / media)
             note = f"{secs:.1f}s"
-            if item.get("music"):
+            if item.get("music") or item.get("voice"):
                 import audio
-                audio.mux(folder / media, audio.mix(secs, item["music"], item.get("music_gain", 0.55), item.get("music_start", 0.0)))
-                note += ", with music"
+                audio.mux(folder / media, audio.mix(secs, item.get("music"), item.get("music_gain", 0.55), item.get("music_start", 0.0),
+                                                    voice=item.get("voice"), voice_at=item.get("voice_at", 0.0)))
+                note += ", with " + " and ".join(k for k in ("music", "voice") if item.get(k))
         elif "screen" in item:
             media = "story.jpg"
             pad_screen(Path(item["screen"]).expanduser(), folder / media)
