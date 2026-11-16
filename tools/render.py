@@ -600,7 +600,14 @@ def main(argv):
         folder = ROOT / "posts" / f"{item['at'][:10]}-{item['channel']}-{item['slug']}"
         folder.mkdir(parents=True, exist_ok=True)
         kind = item["type"]
-        if kind == "carousel" and "panorama" in item:
+        if kind == "carousel" and "review" in item:
+            # a home from a film or a series (tools/review.py)
+            import review
+            for old in folder.glob("*.jpg"):
+                old.unlink()
+            names = review.render_review(item["review"], folder)
+            media, note = ", ".join(names), f"{len(names)} review slides"
+        elif kind == "carousel" and "panorama" in item:
             # one long picture cut into slides (tools/panorama.py)
             import panorama
             for old in folder.glob("*.jpg"):
