@@ -82,7 +82,8 @@ def first(spec, n):
         d.text((PAD, y), " ".join("".join(p for p, _ in w) for w in line), font=f_title, fill=WHITE)
         y += round(104 * 1.06)
     d.text((PAD, y + 18), spec["show"], font=f_show, fill=(235, 228, 255))
-    d.text((W - PAD - font(36, 800).getlength("Scorri  →"), SH - 84), "Scorri  →", font=font(36, 800), fill=WHITE)
+    hint = spec.get("hint_text", "Scorri  →")  # the language of the post; Italian by default
+    d.text((W - PAD - font(36, 800).getlength(hint), SH - 84), hint, font=font(36, 800), fill=WHITE)
     return img.convert("RGB")
 
 
