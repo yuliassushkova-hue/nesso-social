@@ -24,3 +24,8 @@ jobs:
           THREADS_DK_TOKEN: ${{ secrets.THREADS_DK_TOKEN }}
           LI_JULIA_TOKEN: ${{ secrets.LI_JULIA_TOKEN }}
           LI_NESSO_TOKEN: ${{ secrets.LI_NESSO_TOKEN }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_IT_TOKEN: ${{ secrets.YT_IT_TOKEN }}
+          YT_EN_TOKEN: ${{ secrets.YT_EN_TOKEN }}
+          YT_DK_TOKEN: ${{ secrets.YT_DK_TOKEN }}
