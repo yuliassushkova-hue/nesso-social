@@ -50,6 +50,7 @@ export const CHANNELS = {
   // found from the token. A Page needs the Community Management API, which LinkedIn approves for an
   // app of its own, and the Page's organization id in accounts.json.
   'li-julia': { platform: 'linkedin', token: 'LI_JULIA_TOKEN', scope: 'openid profile w_member_social' },
+  'li-nikita': { platform: 'linkedin', token: 'LI_NIKITA_TOKEN', scope: 'openid profile w_member_social' },
   'li-nesso': { platform: 'linkedin', token: 'LI_NESSO_TOKEN', account: 'LI_NESSO_ORG_ID', scope: 'w_organization_social' },
 };
 

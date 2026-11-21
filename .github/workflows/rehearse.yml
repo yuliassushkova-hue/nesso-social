@@ -49,4 +49,5 @@ jobs:
           THREADS_IT_TOKEN: ${{ secrets.THREADS_IT_TOKEN }}
           THREADS_DK_TOKEN: ${{ secrets.THREADS_DK_TOKEN }}
           LI_JULIA_TOKEN: ${{ secrets.LI_JULIA_TOKEN }}
+          LI_NIKITA_TOKEN: ${{ secrets.LI_NIKITA_TOKEN }}
           LI_NESSO_TOKEN: ${{ secrets.LI_NESSO_TOKEN }}

@@ -32,7 +32,7 @@ posts/2026-11-04-ig-it-costi/
 
 ```markdown
 ---
-channel: ig-it                   # ig-it | ig-dk | ig-en | threads-it | threads-dk | li-julia | li-nesso
+channel: ig-it                   # ig-it | ig-dk | ig-en | threads-it | threads-dk | li-julia | li-nikita | li-nesso
 at: 2026-11-04T18:00+01:00       # always with the offset: +01:00 Rome and Copenhagen in winter, +02:00 in summer
 type: carousel                   # Instagram: image | carousel | reel | story   Threads: text | image | video | carousel   LinkedIn: text | image | multi-image
 media: 01.jpg, 02.jpg            # in order; empty for a text post
@@ -55,7 +55,7 @@ images are best at 1080×1350 (4:5); stories and reels at 1080×1920.
 **LinkedIn** takes the text as written: brackets, `*`, `_`, `@` and the rest are escaped on the way
 out, so nothing in the text turns into markup. A `#word` stays a hashtag. LinkedIn has no
 unpublished draft, so `rehearse` checks the sign-in and uploads the images, and nothing is posted.
-`li-julia` posts follow the `julia-linkedin-voice` skill, in English.
+`li-julia` posts follow the `julia-linkedin-voice` skill, in English. `li-nikita` is Nikita Alekseev's own profile, in English; how his posts are written is in nesso_mobile `docs/press/linkedin-nikita/voice.md`, and they wait in `drafts/li-nikita/` until `whoami` shows his name.
 
 Name folders `YYYY-MM-DD-channel-subject`, so the folder list reads as the calendar.
 

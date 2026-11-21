@@ -132,6 +132,23 @@ LinkedIn запрещает автоматические действия на �
 приложению не даёт. Workflow `linkedin-expiry` по понедельникам проверяет дату и за 10 дней до конца
 открывает issue с командами.
 
+### Профиль Никиты (`li-nikita`)
+
+Тот же порядок, что для `li-julia`, и то же приложение *Nesso Social*: новое приложение не нужно,
+Share on LinkedIn разрешает публиковать любому участнику, который нажал **Allow**.
+
+1. На этом Mac, в Chrome, где открыт LinkedIn **Никиты** (не Юли):
+   ```
+   export LINKEDIN_CLIENT_ID=…
+   read -s LINKEDIN_CLIENT_SECRET; export LINKEDIN_CLIENT_SECRET
+   node bin/social.mjs linkedin-login li-nikita
+   unset LINKEDIN_CLIENT_SECRET
+   ```
+   Никита сам нажимает **Allow**. Ключ ляжет в секрет `LI_NIKITA_TOKEN`, дата в `LI_NIKITA_TOKEN_EXPIRES`.
+2. Actions → **whoami**: в строке `li-nikita` должно стоять его имя.
+3. Только после этого посты переезжают из `drafts/li-nikita/` в `posts/`. Раньше нельзя: без ключа пост
+   падает каждые 10 минут и через 36 часов считается пропущенным.
+
 ### Страница Nesso (`li-nesso`)
 
 Постить от страницы можно только после проверки LinkedIn (Community Management API).
