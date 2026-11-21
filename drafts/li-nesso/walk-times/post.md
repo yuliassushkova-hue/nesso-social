@@ -1,8 +1,8 @@
 ---
-channel: li-julia
+channel: li-nesso
 at: 2026-11-11T08:30+01:00
-type: image
-media: 01.jpg
+type: multi-image
+media: 00-photo.jpg, 01.jpg
 ---
 A 5-minute walk on a map can be 11 minutes on foot. 🚶
 
