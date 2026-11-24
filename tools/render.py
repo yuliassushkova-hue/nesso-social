@@ -45,6 +45,9 @@ THEMES = {
     "violet": dict(stops=[VIOLET, PLUM, NIGHT], glow=BLUSH, disc=ORANGE, fg=WHITE, soft=(236, 228, 255),
                    big=ORANGE_LIGHT, hl=ORANGE, hl_fg=WHITE, pill=ORANGE, pill_fg=WHITE, label=ORANGE_LIGHT),
     # the deepest violet, for answers and endings
+    # Black Friday: near-black with orange, the app's own offer sheet
+    "black": dict(stops=[(16, 14, 20), (16, 14, 20)], glow=None, disc=ORANGE, fg=WHITE, soft=(214, 210, 222),
+                  big=ORANGE, hl=ORANGE, hl_fg=WHITE, pill=ORANGE, pill_fg=WHITE, label=ORANGE),
     "night": dict(stops=[NIGHT, VIOLET], glow=PLUM, disc=ORANGE, fg=WHITE, soft=(226, 220, 250),
                   big=ORANGE_LIGHT, hl=ORANGE, hl_fg=WHITE, pill=ORANGE, pill_fg=WHITE, label=ORANGE_LIGHT),
 }
@@ -418,6 +421,20 @@ def clip_frames(clips, total_frames):
         frames = round(clip["secs"] * FPS) if i < len(clips) - 1 else total_frames - (index - 1)
         if frames <= 0:
             break
+        if Path(clip["file"]).suffix.lower() in (".jpg", ".jpeg", ".png"):
+            # A still, moved: a slow push in, cropped to the frame around clip["focus"].
+            still = Image.open(Path(clip["file"]).expanduser()).convert("RGB")
+            s = max(W / still.width, H / still.height) * 1.12
+            big = still.resize((round(still.width * s), round(still.height * s)), Image.LANCZOS)
+            fx = clip.get("focus", 0.5)
+            for k in range(frames):
+                z = 1.12 - 0.12 * (1 - k / max(1, frames - 1)) if clip.get("out") else 1.0 + 0.12 * k / max(1, frames - 1)
+                cw, ch = round(W * 1.12 / z), round(H * 1.12 / z)
+                x0 = round(max(0, min(big.width - cw, big.width * fx - cw / 2)))
+                y0 = round((big.height - ch) / 2)
+                big.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, H), Image.BILINEAR).save(out / f"{index + k:05d}.jpg", quality=90)
+            index += frames
+            continue
         subprocess.run([str(CLIP_TOOL), str(Path(clip["file"]).expanduser()), str(clip.get("start", 0)),
                         f"{frames / FPS:.4f}", str(out), str(index)], check=True)
         index += frames
