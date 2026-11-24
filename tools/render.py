@@ -45,6 +45,9 @@ THEMES = {
     "violet": dict(stops=[VIOLET, PLUM, NIGHT], glow=BLUSH, disc=ORANGE, fg=WHITE, soft=(236, 228, 255),
                    big=ORANGE_LIGHT, hl=ORANGE, hl_fg=WHITE, pill=ORANGE, pill_fg=WHITE, label=ORANGE_LIGHT),
     # the deepest violet, for answers and endings
+    # Black Friday: near-black with orange, the app's own offer sheet
+    "black": dict(stops=[(16, 14, 20), (16, 14, 20)], glow=None, disc=ORANGE, fg=WHITE, soft=(214, 210, 222),
+                  big=ORANGE, hl=ORANGE, hl_fg=WHITE, pill=ORANGE, pill_fg=WHITE, label=ORANGE),
     "night": dict(stops=[NIGHT, VIOLET], glow=PLUM, disc=ORANGE, fg=WHITE, soft=(226, 220, 250),
                   big=ORANGE_LIGHT, hl=ORANGE, hl_fg=WHITE, pill=ORANGE, pill_fg=WHITE, label=ORANGE_LIGHT),
 }
