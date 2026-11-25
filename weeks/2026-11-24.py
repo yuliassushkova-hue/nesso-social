@@ -148,3 +148,33 @@ ITEMS += [
           "Dormiresti nel sottoscala? Scrivilo nei commenti 👇\n" + SAVE +
           "\n\nFoto: Ank Kumar, S. Perquin (CC BY-SA 4.0), Richard Croft (CC BY-SA 2.0), Wikimedia Commons.\n\n" + FILM_TAGS),
 ]
+
+# ---------------------------------------------------------------- the daily Reels, Wednesday 25 onward
+chat, film, tune = BASE["chat"], BASE["film"], W17["tune"]
+ORANGE_AV, VIOLET_AV, INK_AV = BASE["ORANGE_AV"], BASE["VIOLET_AV"], BASE["INK_AV"]
+N = "07-misura-rumore-finestra.png"
+D = "06-dentro-property-check.png"
+
+
+def serif(day, slug, shots, body, end, music, gain=0.6):
+    item = film(day, slug, shots, body, end)
+    item.update({"music": music, "music_gain": gain, "music_start": 0.0})
+    return item
+
+
+ITEMS += [
+    serif(25, "dicembre", [
+        ("35449771", 0.5, 1.3, "Visiti casa", None), ("6273843", 0.5, 1.2, "a *dicembre?*", None),
+        ("34967956", 0.5, 1.4, "Chiedi di accendere", None), ("3201320", 0.5, 1.3, "il *riscaldamento.*", None),
+        ("29538916", 0.5, 1.5, "Dieci minuti.\nPoi tocca.", None),
+        ("6273843", 4.0, 2.6, "Ogni\n*termosifone.*", D),
+    ], "A dicembre una visita dice cose che d'estate non dice. Chiedi di accendere il riscaldamento, aspetta dieci minuti e tocca la parte alta e bassa di ogni termosifone.\n\n"
+       "Il limite: è un radiatore in un pomeriggio. Non dice niente sulla caldaia, sulla pressione dell'impianto, né su quanto costa scaldare questa casa a gennaio.",
+       "34963013", "this-can-t-be-possible"),
+    tune(chat(25, "20:00", "tubi", ("5614823", 0.5), "Paolo", "Proprietario", INK_AV, "Impianto rifatto, silenziosissimo 🔇",
+              [("me", "Posso aprire l'acqua e chiuderla forte?", 0.0), ("them", "Forte? 😅", 0.8), ("me", "Per sentire i tubi.", 0.0)],
+              "Apri. Chiudi forte.\nAscolta i tubi.", "Il telefono misura di quanto sale il rumore.", N,
+              "Misura il bagno in silenzio per 20 secondi. Poi apri il rubinetto per 15 secondi e chiudilo forte, e stai in silenzio mentre il telefono ascolta.\n\n"
+              "Il limite: Nesso misura di quanto il secondo più alto si è alzato sopra la stanza. Non dice cosa l'ha causato: quella è una domanda da idraulico.",
+              size=104), "waves"),
+]
