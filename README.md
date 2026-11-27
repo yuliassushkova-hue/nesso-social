@@ -32,7 +32,7 @@ posts/2026-11-04-ig-it-costi/
 
 ```markdown
 ---
-channel: ig-it                   # ig-it | ig-dk | ig-en | threads-it | threads-dk | li-julia | li-nesso
+channel: ig-it                   # ig-it | ig-dk | ig-en | threads-it | threads-dk | li-julia | li-nesso (a reel on ig-* also goes to yt-* by itself)
 at: 2026-11-04T18:00+01:00       # always with the offset: +01:00 Rome and Copenhagen in winter, +02:00 in summer
 type: carousel                   # Instagram: image | carousel | reel | story   Threads: text | image | video | carousel   LinkedIn: text | image | multi-image
 media: 01.jpg, 02.jpg            # in order; empty for a text post
